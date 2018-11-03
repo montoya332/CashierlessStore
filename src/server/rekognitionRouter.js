@@ -61,11 +61,6 @@ router.post('/detectLabels', upload.single('file'), (req, res) => {
         res.status(200).json(data);
     });
 });
-function getImageUrl(file = '') {
-    if (file) {
-        return 'https://s3-' + config.region + '.amazonaws.com/' + config.bucketName + '/' + file;
-    }
-}
 router.get('/getObject', (req, res) => {
     const file = 'arturo_montoya.jpg'; //TODO: req.file
     s3.getObject({ Bucket: config.bucketName, Key: file }, (error, data) => {
@@ -76,7 +71,7 @@ router.get('/getObject', (req, res) => {
     });
 });
 router.get('/indexFace', (req, res) => {
-    const file = 'arturo_montoya.jpg'; //TODO: req.file
+    const file = req.query.s3file; //'arturo_montoya.jpg';
     indexFace(file, (err, data) => {
         if (err) {
             res.status(500).json(err);
@@ -84,6 +79,11 @@ router.get('/indexFace', (req, res) => {
         res.send(data);
     });
 });
+function getImageUrl(file = '') {
+    if (file) {
+        return 'https://s3-' + config.region + '.amazonaws.com/' + config.bucketName + '/' + file;
+    }
+}
 function indexFace(name, done = () => {}) {
     rekognition.indexFaces(
         {
