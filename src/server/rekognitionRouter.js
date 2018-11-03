@@ -23,7 +23,6 @@ router.get('/test_compareFaces', (req, res) => {
 
 router.post('/recognize', upload.single('image'), (req, res) => {
     const bitmap = fs.readFileSync(req.file.path);
-
     rekognition.searchFacesByImage(
         {
             CollectionId: config.collectionName,

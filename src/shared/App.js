@@ -4,13 +4,14 @@ import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withNamespaces } from 'react-i18next';
 import { setLocale } from './store/app/actions';
-import { ReactComponent as ReactLogo } from './assets/react.svg';
-import Features from './components/Features';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 import css from './App.module.css';
+// import $ from 'jquery';
+// import bootstrap from 'bootstrap';
 
 type PropsT = {
     setLocale: (string) => {},
-    t: (string) => string,
 };
 
 class App extends React.PureComponent<PropsT> {
@@ -19,27 +20,29 @@ class App extends React.PureComponent<PropsT> {
     };
 
     render() {
-        const { t } = this.props;
-
         return (
             <div className={css.wrapper}>
-                <Helmet defaultTitle="React SSR Starter" titleTemplate="%s – React SSR Starter" />
+                <Helmet defaultTitle="Cashierless Store" titleTemplate="%s – Cashierless Store" />
+                <header>
+                    <div className="navbar navbar-dark bg-dark shadow-sm">
+                        <div className="container d-flex justify-content-between">
+                            <a href="#" className="navbar-brand d-flex align-items-center">
+                                <strong>Cashierless Store</strong>
+                            </a>
+                        </div>
+                    </div>
+                </header>
 
-                <h1>
-                    <ReactLogo className={css.reactLogo} /> React + Express – SSR Starter
-                </h1>
-
-                <Features />
-
-                <h2>{t('i18n-example')}</h2>
-                <p>
-                    <button value="de-DE" onClick={this.setLanguage}>
-                        Deutsch
-                    </button>
-                    <button value="en-US" onClick={this.setLanguage}>
-                        English
-                    </button>
-                </p>
+                <main role="main">
+                    <section
+                        className="jumbotron jumbotron-fluid"
+                        style={{ marginBottom: '0px', height: '100vh' }}
+                    >
+                        <div className="container">
+                            <p>TODO: add Routes</p>
+                        </div>
+                    </section>
+                </main>
             </div>
         );
     }
