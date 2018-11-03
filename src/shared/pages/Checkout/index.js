@@ -10,7 +10,7 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-
+import CartDetails from './cartDetails';
 const styles = (theme) => ({
     appBar: {
         position: 'relative',
@@ -53,11 +53,19 @@ const steps = ['User Details', 'Cart Details', 'Review your order'];
 function getStepContent(step) {
     switch (step) {
         case 0:
-            return <p>{steps[0]} Take a picture</p>;
+            return (
+                <div>
+                    Take a picture of User <CartDetails />
+                </div>
+            );
         case 1:
-            return <p>{steps[1]} Take a picture</p>;
+            return (
+                <div>
+                    Take a picture of Cart <CartDetails />
+                </div>
+            );
         case 2:
-            return <p>{steps[2]} and submit order</p>;
+            return <div>{steps[2]} and submit order</div>;
         default:
             throw new Error('Unknown step');
     }

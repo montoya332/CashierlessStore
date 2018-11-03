@@ -21,7 +21,7 @@ router.get('/test_compareFaces', (req, res) => {
     });
 });
 
-router.post('/recognize', upload.single('image'), (req, res) => {
+router.post('/searchFacesByImage', upload.single('image'), (req, res) => {
     const bitmap = fs.readFileSync(req.file.path);
     rekognition.searchFacesByImage(
         {
@@ -41,6 +41,76 @@ router.post('/recognize', upload.single('image'), (req, res) => {
                 } else {
                     res.send({ error: 'Not recognized' });
                 }
+            }
+        }
+    );
+});
+router.get('/detectLabels', (req, res) => {
+    const bitmap = fs.readFileSync(req.file.path);
+    const params = {
+        Image: {
+            Bytes: bitmap,
+        },
+        MaxLabels: 123,
+        MinConfidence: 70,
+    };
+    rekognition.detectLabels(params, (err, data) => {
+        if (err) {
+            res.send(err);
+        }
+        res.send(data);
+    });
+});
+
+router.get('/searchFacesByImageTest', (req, res) => {
+    const name = 'Grocery-items.jpg' || 'arturo_montoya3.jpg';
+
+    rekognition.searchFacesByImage(
+        {
+            CollectionId: 'collectionname',
+            FaceMatchThreshold: 70,
+            Image: {
+                S3Object: {
+                    Bucket: bucketName,
+                    Name: name,
+                },
+            },
+            MaxFaces: 1,
+        },
+        (err, data) => {
+            if (err) {
+                res.send(err);
+            } else {
+                if (data.FaceMatches && data.FaceMatches.length > 0 && data.FaceMatches[0].Face) {
+                    res.send(data.FaceMatches[0].Face);
+                } else {
+                    res.send({ error: 'Not recognized' });
+                }
+            }
+        }
+    );
+});
+router.get('/test_indexFaces', (req, res) => {
+    const name = 'arturo_montoya.jpg';
+    rekognition.indexFaces(
+        {
+            CollectionId: 'collectionname',
+            Image: {
+                S3Object: {
+                    Bucket: bucketName,
+                    Name: name,
+                },
+            },
+            ExternalImageId: name,
+            DetectionAttributes: ['DEFAULT'],
+            MaxFaces: 1,
+            QualityFilter: 'AUTO',
+        },
+        (err, data) => {
+            if (err) {
+                res.send(err);
+            } else {
+                res.send(data);
             }
         }
     );
