@@ -18,19 +18,10 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 //app.use('/api/rekognition', rekognitionRouter);
-router.get('/test_compareFaces', (req, res) => {
-    compareFaces(bucketName, 'arturo_montoya2.jpg', 'arturo_montoya3.jpg', (err, data) => {
-        if (err) {
-            console.log(err, err.stack);
-            res.send({ error: 'err' });
-        } else {
-            res.send(data);
-        }
-    });
-});
 
-router.post('/searchFacesByImage', upload.single('image'), (req, res) => {
-    const bitmap = fs.readFileSync(req.file.path);
+router.post('/searchFacesByImage', upload.single('file'), (req, res) => {
+    const file = req.file;
+    const bitmap = fs.readFileSync(file.path);
     rekognition.searchFacesByImage(
         {
             CollectionId: config.collectionName,
@@ -73,12 +64,13 @@ router.post('/detectLabels', upload.single('file'), (req, res) => {
     });
 });
 
+//=============================================================
 router.get('/searchFacesByImageTest', (req, res) => {
     const name = 'Grocery-items.jpg' || 'arturo_montoya3.jpg';
 
     rekognition.searchFacesByImage(
         {
-            CollectionId: 'collectionname',
+            CollectionId: config.collectionName,
             FaceMatchThreshold: 70,
             Image: {
                 S3Object: {
@@ -105,7 +97,7 @@ router.get('/test_indexFaces', (req, res) => {
     const name = 'arturo_montoya.jpg';
     rekognition.indexFaces(
         {
-            CollectionId: 'collectionname',
+            CollectionId: config.collectionName,
             Image: {
                 S3Object: {
                     Bucket: bucketName,
@@ -131,24 +123,24 @@ export default router;
 
 /*  ====================== TODO ====================== */
 
-function compareFaces(bucketName, name, withName, callback) {
-    const params = {
-        SimilarityThreshold: 90,
-        SourceImage: {
-            S3Object: {
-                Bucket: bucketName,
-                Name: name,
-            },
-        },
-        TargetImage: {
-            S3Object: {
-                Bucket: bucketName,
-                Name: withName,
-            },
-        },
-    };
-    rekognition.compareFaces(params, callback);
-}
+// function compareFaces(bucketName, name, withName, callback) {
+//     const params = {
+//         SimilarityThreshold: 90,
+//         SourceImage: {
+//             S3Object: {
+//                 Bucket: bucketName,
+//                 Name: name,
+//             },
+//         },
+//         TargetImage: {
+//             S3Object: {
+//                 Bucket: bucketName,
+//                 Name: withName,
+//             },
+//         },
+//     };
+//     rekognition.compareFaces(params, callback);
+// }
 
 // function getObject(bucketName, key = 'arturo_montoya3.jpg') {
 //     s3.getObject({ Bucket: bucketName, Key: key }, (error, data) => {
