@@ -4,11 +4,8 @@ import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withNamespaces } from 'react-i18next';
 import { setLocale } from './store/app/actions';
-import 'bootstrap/dist/css/bootstrap.min.css';
-
+import Page1 from './pages/Page-1';
 import css from './App.module.css';
-// import $ from 'jquery';
-// import bootstrap from 'bootstrap';
 
 type PropsT = {
     setLocale: (string) => {},
@@ -20,29 +17,11 @@ class App extends React.PureComponent<PropsT> {
     };
 
     render() {
+        const appName = 'Cashierless Store';
         return (
             <div className={css.wrapper}>
-                <Helmet defaultTitle="Cashierless Store" titleTemplate="%s – Cashierless Store" />
-                <header>
-                    <div className="navbar navbar-dark bg-dark shadow-sm">
-                        <div className="container d-flex justify-content-between">
-                            <a href="#" className="navbar-brand d-flex align-items-center">
-                                <strong>Cashierless Store</strong>
-                            </a>
-                        </div>
-                    </div>
-                </header>
-
-                <main role="main">
-                    <section
-                        className="jumbotron jumbotron-fluid"
-                        style={{ marginBottom: '0px', height: '100vh' }}
-                    >
-                        <div className="container">
-                            <p>TODO: add Routes</p>
-                        </div>
-                    </section>
-                </main>
+                <Helmet defaultTitle={appName} titleTemplate={`%s – ${appName}`} />
+                <Page1 />
             </div>
         );
     }
