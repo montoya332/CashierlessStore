@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
+
 import axios from 'axios';
 const styles = (theme) => ({
     button: {
@@ -35,6 +36,9 @@ class CartDetails extends React.Component {
         data.append('description', 'description');
         // '/files' is your node.js route that triggers our middleware
         axios.post('/api/rekognition/searchFacesByImage', data).then((response) => {
+            if (response.data && response.data.ExternalImageId) {
+                console.log(response.data.ExternalImageId);
+            }
             console.log(response); // do something with the response
         });
     }
