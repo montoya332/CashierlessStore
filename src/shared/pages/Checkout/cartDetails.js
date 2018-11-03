@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
-
+import axios from 'axios';
 const styles = (theme) => ({
     button: {
         margin: theme.spacing.unit,
@@ -21,25 +21,18 @@ class CartDetails extends React.Component {
             imageURL: '',
         };
         this.uploadInput = React.createRef();
-
-        this.handleUploadImage = this.handleUploadImage.bind(this);
+        this.handleUploadFile = this.handleUploadFile.bind(this);
     }
-
-    handleUploadImage(ev) {
-        ev.preventDefault();
-        const uploadInput = this.uploadInput.current;
-        console.log(uploadInput);
+    handleUploadFile(event) {
+        event.preventDefault();
+        const file = event.target.files[0];
         const data = new FormData();
-        data.append('file', uploadInput.files[0]);
-        data.append('filename', uploadInput.files[0]);
-
-        fetch('http://localhost:8000/upload', {
-            method: 'POST',
-            body: data,
-        }).then((response) => {
-            response.json().then((body) => {
-                this.setState({ imageURL: `http://localhost:8000/${body.file}` });
-            });
+        data.append('file', file);
+        data.append('name', 'name');
+        data.append('description', 'description');
+        // '/files' is your node.js route that triggers our middleware
+        axios.post('/api/rekognition/detectLabels', data).then((response) => {
+            console.log(response); // do something with the response
         });
     }
 
@@ -47,7 +40,7 @@ class CartDetails extends React.Component {
         const { classes } = this.props;
 
         return (
-            <form onSubmit={this.handleUploadImage}>
+            <form>
                 <div>
                     <input
                         accept="image/*"
@@ -55,6 +48,8 @@ class CartDetails extends React.Component {
                         ref={this.uploadInput}
                         type="file"
                         id="icon-button-file"
+                        name="image"
+                        onChange={this.handleUploadFile}
                     />
                     <label htmlFor="icon-button-file">
                         <IconButton color="primary" className={classes.button} component="span">
@@ -63,9 +58,6 @@ class CartDetails extends React.Component {
                     </label>
                 </div>
                 <br />
-                <div>
-                    <button>Upload</button>
-                </div>
                 {this.state.imageURL && <img src={this.state.imageURL} alt="img" />}
             </form>
         );

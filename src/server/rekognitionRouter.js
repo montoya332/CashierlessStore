@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import multer from 'multer';
 const config = require('../../config.json');
 const AWS = require('aws-sdk');
 AWS.config.update(config);
@@ -7,9 +8,16 @@ const rekognition = new AWS.Rekognition();
 const bucketName = 'sjsucmpe280';
 const router = Router();
 const fs = require('fs-extra');
-const multer = require('multer');
-const upload = multer({ dest: 'uploads/' });
+const storage = multer.diskStorage({
+    destination: './uploads',
+    filename(req, file, cb) {
+        cb(null, `${new Date()}-${file.originalname}`);
+    },
+});
 
+const upload = multer({ storage });
+
+//app.use('/api/rekognition', rekognitionRouter);
 router.get('/test_compareFaces', (req, res) => {
     compareFaces(bucketName, 'arturo_montoya2.jpg', 'arturo_montoya3.jpg', (err, data) => {
         if (err) {
@@ -45,8 +53,11 @@ router.post('/searchFacesByImage', upload.single('image'), (req, res) => {
         }
     );
 });
-router.get('/detectLabels', (req, res) => {
-    const bitmap = fs.readFileSync(req.file.path);
+router.post('/detectLabels', upload.single('file'), (req, res) => {
+    const file = req.file;
+    const meta = req.body;
+    console.log(meta);
+    const bitmap = fs.readFileSync(file.path);
     const params = {
         Image: {
             Bytes: bitmap,
@@ -56,9 +67,9 @@ router.get('/detectLabels', (req, res) => {
     };
     rekognition.detectLabels(params, (err, data) => {
         if (err) {
-            res.send(err);
+            res.status(500).json(err);
         }
-        res.send(data);
+        res.status(200).json(data);
     });
 });
 
