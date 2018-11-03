@@ -4,7 +4,7 @@ import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withNamespaces } from 'react-i18next';
 import { setLocale } from './store/app/actions';
-import Page1 from './pages/Page-1';
+import Checkout from './pages/Checkout';
 import css from './App.module.css';
 
 type PropsT = {
@@ -21,7 +21,7 @@ class App extends React.PureComponent<PropsT> {
         return (
             <div className={css.wrapper}>
                 <Helmet defaultTitle={appName} titleTemplate={`%s – ${appName}`} />
-                <Page1 />
+                <Checkout />
             </div>
         );
     }
