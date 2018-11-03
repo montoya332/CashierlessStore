@@ -11,6 +11,9 @@ import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import CartDetails from './cartDetails';
+import UserDetails from './userDetails';
+import ReviewOrder from './reviewOrder';
+
 const styles = (theme) => ({
     appBar: {
         position: 'relative',
@@ -50,31 +53,14 @@ const styles = (theme) => ({
 
 const steps = ['User Details', 'Cart Details', 'Review your order'];
 
-function getStepContent(step) {
-    switch (step) {
-        case 0:
-            return (
-                <div>
-                    Take a picture of User <CartDetails />
-                </div>
-            );
-        case 1:
-            return (
-                <div>
-                    Take a picture of Cart <CartDetails />
-                </div>
-            );
-        case 2:
-            return <div>{steps[2]} and submit order</div>;
-        default:
-            throw new Error('Unknown step');
-    }
-}
-
 class Checkout extends React.Component {
-    state = {
-        activeStep: 0,
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            activeStep: 0,
+            orderItems: [],
+        };
+    }
 
     handleNext = () => {
         this.setState((state) => ({
@@ -92,6 +78,30 @@ class Checkout extends React.Component {
         this.setState({
             activeStep: 0,
         });
+    };
+    handleUserDetails = (r) => {
+        console.log(r);
+        this.handleNext();
+    };
+    handleCartDetails = (r) => {
+        if (r && r.data && r.data.Labels) {
+            this.setState({
+                orderItems: r.data.Labels,
+            });
+            this.handleNext();
+        }
+    };
+    getStepContent = (step) => {
+        switch (step) {
+            case 0:
+                return <UserDetails formCompleted={this.handleUserDetails} />;
+            case 1:
+                return <CartDetails formCompleted={this.handleCartDetails} />;
+            case 2:
+                return <ReviewOrder />;
+            default:
+                throw new Error('Unknown step');
+        }
     };
 
     render() {
@@ -134,7 +144,7 @@ class Checkout extends React.Component {
                                 </React.Fragment>
                             ) : (
                                 <React.Fragment>
-                                    {getStepContent(activeStep)}
+                                    {this.getStepContent(activeStep)}
                                     <div className={classes.buttons}>
                                         {activeStep !== 0 && (
                                             <Button

@@ -17,6 +17,7 @@ const styles = (theme) => ({
 class CartDetails extends React.Component {
     constructor(props) {
         super(props);
+
         this.state = {
             imageURL: '',
         };
@@ -31,35 +32,36 @@ class CartDetails extends React.Component {
         data.append('name', 'name');
         data.append('description', 'description');
         // '/files' is your node.js route that triggers our middleware
-        axios.post('/api/rekognition/detectLabels', data).then((response) => {
+        axios.post('/api/rekognition/searchFacesByImage', data).then((response) => {
             this.props.formCompleted && this.props.formCompleted(response);
+            if (response.data && response.data.ExternalImageId) {
+                console.log(response.data.ExternalImageId);
+            }
             console.log(response); // do something with the response
         });
     }
-
     render() {
         const { classes } = this.props;
 
         return (
             <form>
                 <div>
-                    <h3>Cart Details</h3>
+                    <h3>User Details</h3>
                     <input
                         accept="image/*"
                         className={classes.input}
                         ref={this.uploadInput}
                         type="file"
-                        id="icon-button-file-cart"
+                        id="icon-button-file-user"
                         name="image"
                         onChange={this.handleUploadFile}
                     />
-                    <label htmlFor="icon-button-file-cart">
+                    <label htmlFor="icon-button-file-user">
                         <IconButton color="primary" className={classes.button} component="span">
                             <PhotoCamera />
                         </IconButton>
                     </label>
                 </div>
-                {this.state.imageURL && <img src={this.state.imageURL} alt="img" />}
             </form>
         );
     }
