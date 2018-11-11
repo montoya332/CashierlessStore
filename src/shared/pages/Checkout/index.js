@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography';
 // import CartDetails from './cartDetails.js';
 // import UserDetails from './userDetails.js';
 // import ReviewOrder from './reviewOrder.js';
+import Camera from '../../components/camera';
 
 const styles = (theme) => ({
     appBar: {
@@ -90,7 +91,8 @@ class Checkout extends React.Component {
         }
     };
     getStepContent = (step) => {
-        return step;
+        console.log(step);
+        return <Camera />;
         //switch (step) {
         // case 0:
         //     return <UserDetails formCompleted={this.handleUserDetails} />;
