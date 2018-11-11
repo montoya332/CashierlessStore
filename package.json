@@ -1,7 +1,7 @@
 {
-  "name": "react-ssr-setup",
-  "version": "2.0.2",
-  "author": "Manuel Bieh <node@manuelbieh.de> (https://github.com/manuelbieh)",
+  "name": "CashierlessStore",
+  "version": "1.0.0",
+  "author": "Team SJSU",
   "license": "MIT",
   "engines": {
     "node": ">=8.9.0",
@@ -57,6 +57,7 @@
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
     "react-router-redux": "^5.0.0-alpha.9",
+    "recharts": "^1.3.6",
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0",
     "reselect": "^4.0.0",

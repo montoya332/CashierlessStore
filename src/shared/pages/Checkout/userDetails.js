@@ -14,7 +14,7 @@ const styles = (theme) => ({
     },
 });
 
-class CartDetails extends React.Component {
+class UserDetails extends React.Component {
     constructor(props) {
         super(props);
 
@@ -42,7 +42,6 @@ class CartDetails extends React.Component {
     }
     render() {
         const { classes } = this.props;
-
         return (
             <form>
                 <div>
@@ -67,9 +66,11 @@ class CartDetails extends React.Component {
     }
 }
 
-CartDetails.propTypes = {
+UserDetails.defaultProps = { formCompleted: () => {} };
+
+UserDetails.propTypes = {
     classes: PropTypes.object.isRequired,
-    formCompleted: PropTypes.function,
+    formCompleted: PropTypes.func,
 };
 
-export default withStyles(styles)(CartDetails);
+export default withStyles(styles)(UserDetails);
