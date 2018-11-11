@@ -16,3 +16,7 @@ tmp
 bundle-stats.json
 config.json
 uploads/*
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
