@@ -90,16 +90,17 @@ class Checkout extends React.Component {
         }
     };
     getStepContent = (step) => {
-        switch (step) {
-            // case 0:
-            //     return <UserDetails formCompleted={this.handleUserDetails} />;
-            // case 1:
-            //     return <CartDetails />;
-            // case 2:
-            //     return <ReviewOrder />;
-            default:
-                throw new Error('Unknown step');
-        }
+        return step;
+        //switch (step) {
+        // case 0:
+        //     return <UserDetails formCompleted={this.handleUserDetails} />;
+        // case 1:
+        //     return <CartDetails />;
+        // case 2:
+        //     return <ReviewOrder />;
+        //     default:
+        //         throw new Error('Unknown step');
+        // }
     };
 
     render() {
