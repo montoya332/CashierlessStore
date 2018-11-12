@@ -9,11 +9,11 @@
   },
   "scripts": {
     "analyze": "yarn build:with-stats && yarn start:analyzer",
-    "build": "node_modules/cross-env/dist/bin/cross-env.js NODE_ENV=production node scripts/build.js",
-    "build:with-stats": "node_modules/cross-env/dist/bin/cross-env.js NODE_ENV=production webpack --config config/webpack.config.js/client.prod.js --json > build/client/static/bundle-stats.json",
+    "build": "cross-env NODE_ENV=production node scripts/build.js",
+    "build:with-stats": "cross-env NODE_ENV=production webpack --config config/webpack.config.js/client.prod.js --json > build/client/static/bundle-stats.json",
     "lint": "eslint ./src",
     "plop": "plop",
-    "start": "node_modules/cross-env/dist/bin/cross-env.js NODE_ENV=development PORT=8081 node scripts/start.js",
+    "start": "cross-env NODE_ENV=development PORT=8081 node scripts/start.js",
     "start:analyzer": "webpack-bundle-analyzer build/client/static/bundle-stats.json",
     "test": "node scripts/test.js --env=jsdom",
     "test:update": "yarn test --updateSnapshot"
