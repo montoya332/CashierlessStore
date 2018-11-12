@@ -62,7 +62,8 @@
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0",
     "reselect": "^4.0.0",
-    "serve-static": "^1.13.2"
+    "serve-static": "^1.13.2",
+    "webpack": "^4.25.1"
   },
   "devDependencies": {
     "@babel/core": "^7.1.5",
@@ -123,7 +124,6 @@
     "rimraf": "^2.6.2",
     "stats-webpack-plugin": "^0.7.0",
     "url-loader": "^1.1.2",
-    "webpack": "^4.25.1",
     "webpack-bundle-analyzer": "^3.0.3",
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.10",
