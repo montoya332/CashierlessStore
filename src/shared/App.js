@@ -1,5 +1,6 @@
 // @flow
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withNamespaces } from 'react-i18next';
@@ -22,29 +23,41 @@ class App extends React.PureComponent<PropsT> {
     setLanguage = (e: SyntheticEvent<HTMLButtonElement>) => {
         this.props.setLocale(e.target.value);
     };
-    renderContainer() {
+    renderRoutes() {
+        const { user } = this.props;
+        if (user.userId) {
+            return (
+                <div>
+                    <Route path="/analytics" component={Analytics} />
+                    <Route path="/order" component={Checkout} />
+                    <Route path="/orderhistory" component={Orderhistory} />
+                    <Route path="/products" component={Products} />
+                    <Route path="/signout" component={Analytics} />
+                    <Route path="/account" component={Analytics} />
+                    <Route component={Analytics} />
+                </div>
+            );
+        }
         return (
             <div>
-                <Route path="/analytics" component={Analytics} />
-                <Route path="/order" component={Checkout} />
-                <Route path="/orderhistory" component={Orderhistory} />
-                <Route path="/products" component={Products} />
-                <Route path="/signin" component={Signin} />
-                <Route path="/account" component={Signin} />
+                <Route component={Signin} />
             </div>
         );
     }
     render() {
         const appName = 'Cashierless Store';
+        const { user } = this.props;
         return (
             <div className={css.wrapper}>
                 <Helmet defaultTitle={appName} titleTemplate={`%s – ${appName}`} />
-                <Dashboard>{this.renderContainer()}</Dashboard>
+                <Dashboard showDrawer={!!user.userId}>{this.renderRoutes()}</Dashboard>
             </div>
         );
     }
 }
-
+App.propTypes = {
+    user: PropTypes.object,
+};
 const mapDispatchToProps = {
     setLocale,
 };
@@ -52,6 +65,7 @@ const mapStateToProps = (state) => {
     console.log('state: ', state);
     return {
         location: state.router.location,
+        user: state.user,
     };
 };
 export default connect(

@@ -105,40 +105,10 @@ class Dashboard extends React.Component {
     handleDrawerClose = () => {
         this.setState({ open: false });
     };
-
-    render() {
-        const { classes } = this.props;
-
-        return (
-            <div className={classes.root}>
-                <CssBaseline />
-                <AppBar
-                    position="absolute"
-                    className={classNames(classes.appBar, this.state.open && classes.appBarShift)}
-                >
-                    <Toolbar disableGutters={!this.state.open} className={classes.toolbar}>
-                        <IconButton
-                            color="inherit"
-                            aria-label="Open drawer"
-                            onClick={this.handleDrawerOpen}
-                            className={classNames(
-                                classes.menuButton,
-                                this.state.open && classes.menuButtonHidden
-                            )}
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                        <Typography
-                            component="h1"
-                            variant="h6"
-                            color="inherit"
-                            noWrap
-                            className={classes.title}
-                        >
-                            Cashierless Store
-                        </Typography>
-                    </Toolbar>
-                </AppBar>
+    renderDrawer() {
+        const { classes, showDrawer } = this.props;
+        if (showDrawer) {
+            return (
                 <Drawer
                     variant="permanent"
                     classes={{
@@ -159,6 +129,44 @@ class Dashboard extends React.Component {
                     <Divider />
                     <List>{secondaryListItems}</List>
                 </Drawer>
+            );
+        }
+    }
+    render() {
+        const { classes, showDrawer } = this.props;
+        const handleDrawerOpen = showDrawer ? this.handleDrawerOpen : undefined;
+        return (
+            <div className={classes.root}>
+                <CssBaseline />
+                <AppBar
+                    position="absolute"
+                    className={classNames(classes.appBar, this.state.open && classes.appBarShift)}
+                >
+                    <Toolbar disableGutters={!this.state.open} className={classes.toolbar}>
+                        <IconButton
+                            color="inherit"
+                            aria-label="Open drawer"
+                            onClick={handleDrawerOpen}
+                            className={classNames(
+                                classes.menuButton,
+                                this.state.open && classes.menuButtonHidden
+                            )}
+                        >
+                            {showDrawer && <MenuIcon />}
+                        </IconButton>
+
+                        <Typography
+                            component="h1"
+                            variant="h6"
+                            color="inherit"
+                            noWrap
+                            className={classes.title}
+                        >
+                            Cashierless Store
+                        </Typography>
+                    </Toolbar>
+                </AppBar>
+                {this.renderDrawer()}
                 <main className={classes.content}>
                     <div className={classes.appBarSpacer} />
                     {this.props.children}
@@ -171,6 +179,7 @@ class Dashboard extends React.Component {
 Dashboard.propTypes = {
     classes: PropTypes.object.isRequired,
     children: PropTypes.node,
+    showDrawer: PropTypes.bool,
 };
 
 export default withStyles(styles)(Dashboard);
