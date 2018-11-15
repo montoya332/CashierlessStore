@@ -8,10 +8,8 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-// import CartDetails from './cartDetails';
-// import UserDetails from './userDetails';
-// import ReviewOrder from './reviewOrder';
-// import Camera from '../../components/camera';
+import List from '../../components/list';
+import Camera from '../../components/camera';
 
 const styles = (theme) => ({
     appBar: {
@@ -91,19 +89,16 @@ class Checkout extends React.Component {
         }
     };
     getStepContent = (step) => {
-        console.log(step);
-        return step;
-        // return <Camera />;
-        // switch (step) {
-        //     case 0:
-        //         return <UserDetails formCompleted={this.handleUserDetails} />;
-        //     case 1:
-        //         return <CartDetails />;
-        //     case 2:
-        //         return <ReviewOrder />;
-        //     default:
-        //         throw new Error('Unknown step');
-        // }
+        switch (step) {
+            case 0:
+                return <List items={[]} />;
+            case 1:
+                return <Camera />;
+            case 2:
+                return <List items={stubData()} />;
+            default:
+                throw new Error('Unknown step');
+        }
     };
 
     render() {
@@ -171,3 +166,15 @@ Checkout.propTypes = {
 };
 
 export default withStyles(styles)(Checkout);
+
+function stubData() {
+    return [
+        { Name: 'Plant', Confidence: 99.71910858154297 },
+        { Name: 'Vegetable', Confidence: 98.99150085449219 },
+        { Name: 'Food', Confidence: 98.99150085449219 },
+        { Name: 'Broccoli', Confidence: 98.99150085449219 },
+        { Name: 'Banana', Confidence: 97.18341064453125 },
+        { Name: 'Fruit', Confidence: 97.18341064453125 },
+        { Name: 'Carrot', Confidence: 72.56779479980469 },
+    ];
+}
