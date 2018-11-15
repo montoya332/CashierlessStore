@@ -9,6 +9,7 @@ import { configureStore } from '../shared/store';
 import serverRender from './render';
 import paths from '../../config/paths';
 import rekognitionRouter from './rekognitionRouter';
+import cookieParser from 'cookie-parser';
 
 require('dotenv').config();
 
@@ -27,8 +28,12 @@ app.use(cors());
 
 app.use(bodyParser.json());
 
+app.use(cookieParser());
+
 app.use((req, res, next) => {
-    req.store = configureStore();
+    const { userId } = req.cookies;
+    const initialState = userId ? { user: { userId } } : {};
+    req.store = configureStore({ initialState });
     return next();
 });
 

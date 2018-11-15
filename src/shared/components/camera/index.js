@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Camera, { FACING_MODES } from 'react-html5-camera-photo';
+import Camera, { FACING_MODES, IMAGE_TYPES } from 'react-html5-camera-photo';
 import 'react-html5-camera-photo/build/css/index.css';
 import './styles.css';
 
@@ -16,7 +16,11 @@ class ReactCamera extends Component {
         }
         return (
             <div className="camera-container">
-                <Camera idealFacingMode={facingMode} onTakePhoto={this.onTakePhoto} />
+                <Camera
+                    idealFacingMode={facingMode}
+                    onTakePhoto={this.onTakePhoto}
+                    imageType={IMAGE_TYPES.PNG}
+                />
             </div>
         );
     }

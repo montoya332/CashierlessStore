@@ -17,30 +17,37 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 router.post('/searchFacesByImage', upload.single('file'), (req, res) => {
-    const file = req.file;
-    const bitmap = fs.readFileSync(file.path);
-    rekognition.searchFacesByImage(
-        {
-            CollectionId: config.collectionName,
-            FaceMatchThreshold: 70,
-            Image: {
-                Bytes: bitmap,
-            },
-            MaxFaces: 1,
-        },
-        (err, data) => {
-            if (err) {
-                res.send(err);
+    const callback = (err, data) => {
+        if (err) {
+            res.cookie('userId', '', { maxAge: 900000 }).send(err);
+        } else {
+            if (data.FaceMatches && data.FaceMatches.length > 0 && data.FaceMatches[0].Face) {
+                const face = data.FaceMatches[0].Face;
+                res.cookie('userId', face.ExternalImageId, { maxAge: 900000 }).send({
+                    ...face,
+                    img: getImageUrl(face.ExternalImageId),
+                    userId: face.ExternalImageId,
+                });
             } else {
-                if (data.FaceMatches && data.FaceMatches.length > 0 && data.FaceMatches[0].Face) {
-                    const face = data.FaceMatches[0].Face;
-                    res.send({ ...face, img: getImageUrl(face.ExternalImageId) });
-                } else {
-                    res.send({ error: 'Not recognized' });
-                }
+                res.cookie('userId', '', { maxAge: 900000 }).send({ error: 'Not recognized' });
             }
         }
-    );
+    };
+    const file = req.file;
+    let bitmap;
+    if (file) {
+        bitmap = fs.readFileSync(file.path);
+        searchFacesByImage(bitmap, callback);
+    } else {
+        let base64Data = req.body.file.replace(/^data:image\/png;base64,/, '');
+        base64Data = base64Data.replace(/^data:image\/jpeg;base64,/, '');
+        const filePath = './uploads/searchFacesByImage-' + new Date().getTime() + '.png';
+        fs.writeFile(filePath, base64Data, 'base64', (err) => {
+            if (err) return res.send({ error: err });
+            bitmap = fs.readFileSync(filePath);
+            searchFacesByImage(bitmap, callback);
+        });
+    }
 });
 router.post('/detectLabels', upload.single('file'), (req, res) => {
     const file = req.file;
@@ -79,6 +86,19 @@ router.get('/indexFace', (req, res) => {
         res.send(data);
     });
 });
+function searchFacesByImage(bitmap, callback = () => {}) {
+    rekognition.searchFacesByImage(
+        {
+            CollectionId: config.collectionName,
+            FaceMatchThreshold: 70,
+            Image: {
+                Bytes: bitmap,
+            },
+            MaxFaces: 1,
+        },
+        callback
+    );
+}
 function getImageUrl(file = '') {
     if (file) {
         return 'https://s3-' + config.region + '.amazonaws.com/' + config.bucketName + '/' + file;

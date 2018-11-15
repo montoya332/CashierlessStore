@@ -8,6 +8,8 @@ import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Camera from '../../components/camera';
 import { connect } from 'react-redux';
+import { signInUser } from '../../store/app/actions';
+import axios from 'axios';
 
 const styles = (theme) => ({
     main: {
@@ -43,6 +45,21 @@ const styles = (theme) => ({
 });
 
 class SignIn extends React.PureComponent {
+    constructor(props) {
+        super(props);
+        this.handleUploadFile = this.handleUploadFile.bind(this);
+    }
+    handleUploadFile(dataUri) {
+        const data = new FormData();
+        data.append('file', dataUri);
+        data.append('name', 'name');
+        data.append('description', 'description');
+        axios.post('/api/rekognition/searchFacesByImage', data).then((response) => {
+            if (response.data && response.data.ExternalImageId) {
+                this.props.signInUser(response.data);
+            }
+        });
+    }
     render() {
         const { classes } = this.props;
 
@@ -56,7 +73,7 @@ class SignIn extends React.PureComponent {
                     <Typography component="h1" variant="h5">
                         Sign in
                     </Typography>
-                    <Camera />
+                    <Camera onTakePhoto={this.handleUploadFile} />
                 </Paper>
             </main>
         );
@@ -65,9 +82,10 @@ class SignIn extends React.PureComponent {
 
 SignIn.propTypes = {
     classes: PropTypes.object.isRequired,
+    signInUser: PropTypes.func,
 };
 const SignInWithStyles = withStyles(styles)(SignIn);
-const mapDispatchToProps = {};
+const mapDispatchToProps = { signInUser };
 const mapStateToProps = () => {
     return {};
 };
