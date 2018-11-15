@@ -51,7 +51,7 @@ class App extends React.PureComponent<PropsT> {
         return (
             <div className={css.wrapper}>
                 <Helmet defaultTitle={appName} titleTemplate={`%s – ${appName}`} />
-                <Dashboard showDrawer={!!user.userId}>{this.renderRoutes()}</Dashboard>
+                <Dashboard showDrawer={!!user.userId || !!user}>{this.renderRoutes()}</Dashboard>
             </div>
         );
     }
