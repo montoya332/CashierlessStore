@@ -25,7 +25,8 @@ class App extends React.PureComponent<PropsT> {
     };
     renderRoutes() {
         const { user } = this.props;
-        if (user.userId) {
+        if (user.userId || user) {
+            //TODO: remove true , used to avoid signin for now
             return (
                 <div>
                     <Route path="/analytics" component={Analytics} />
