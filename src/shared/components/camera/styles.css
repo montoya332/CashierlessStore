@@ -1,0 +1,4 @@
+.camera-container .react-html5-camera-photo > img,
+.camera-container .react-html5-camera-photo > video {
+    width: 100% !important;
+}

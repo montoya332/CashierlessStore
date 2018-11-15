@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
-
 import axios from 'axios';
+
 const styles = (theme) => ({
     button: {
         margin: theme.spacing.unit,

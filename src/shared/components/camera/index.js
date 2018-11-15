@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Camera, { FACING_MODES } from 'react-html5-camera-photo';
 import 'react-html5-camera-photo/build/css/index.css';
+import './styles.css';
 
 class ReactCamera extends Component {
     onTakePhoto = (dataUri) => {
@@ -14,7 +15,7 @@ class ReactCamera extends Component {
             facingMode = FACING_MODES.USER;
         }
         return (
-            <div className="App">
+            <div className="camera-container">
                 <Camera idealFacingMode={facingMode} onTakePhoto={this.onTakePhoto} />
             </div>
         );

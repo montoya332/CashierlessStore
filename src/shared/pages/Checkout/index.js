@@ -8,10 +8,10 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-// import CartDetails from './cartDetails.js';
-// import UserDetails from './userDetails.js';
-// import ReviewOrder from './reviewOrder.js';
-import Camera from '../../components/camera';
+// import CartDetails from './cartDetails';
+// import UserDetails from './userDetails';
+// import ReviewOrder from './reviewOrder';
+// import Camera from '../../components/camera';
 
 const styles = (theme) => ({
     appBar: {
@@ -92,14 +92,15 @@ class Checkout extends React.Component {
     };
     getStepContent = (step) => {
         console.log(step);
-        return <Camera />;
-        //switch (step) {
-        // case 0:
-        //     return <UserDetails formCompleted={this.handleUserDetails} />;
-        // case 1:
-        //     return <CartDetails />;
-        // case 2:
-        //     return <ReviewOrder />;
+        return step;
+        // return <Camera />;
+        // switch (step) {
+        //     case 0:
+        //         return <UserDetails formCompleted={this.handleUserDetails} />;
+        //     case 1:
+        //         return <CartDetails />;
+        //     case 2:
+        //         return <ReviewOrder />;
         //     default:
         //         throw new Error('Unknown step');
         // }
