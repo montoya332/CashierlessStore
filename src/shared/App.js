@@ -10,6 +10,7 @@ import Checkout from './pages/checkout';
 import Dashboard from './pages/dashboard';
 import Products from './pages/products';
 import Signin from './pages/signin';
+import Signup from './pages/signup';
 import Orderhistory from './pages/orderhistory';
 
 import css from './App.module.css';
@@ -34,16 +35,16 @@ class App extends React.PureComponent<PropsT> {
                     <Route path="/order" component={Checkout} />
                     <Route path="/orderhistory" component={Orderhistory} />
                     <Route path="/products" component={Products} />
-                    <Route path="/signout" component={Analytics} />
                     <Route path="/account" component={Analytics} />
                     <Route component={NoMatch} />
                 </Switch>
             );
         }
         return (
-            <div>
+            <Switch>
+                <Route path="/signup" component={Signup} />
                 <Route component={Signin} />
-            </div>
+            </Switch>
         );
     }
     render() {
