@@ -35,7 +35,6 @@ class App extends React.PureComponent<PropsT> {
                     <Route path="/products" component={Products} />
                     <Route path="/signout" component={Analytics} />
                     <Route path="/account" component={Analytics} />
-                    <Route component={Analytics} />
                 </div>
             );
         }
