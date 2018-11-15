@@ -10,6 +10,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import List from '../../components/list';
 import Camera from '../../components/camera';
+import axios from 'axios/index';
 
 const styles = (theme) => ({
     appBar: {
@@ -56,6 +57,16 @@ class Checkout extends React.Component {
         this.state = {
             activeStep: 0,
             orderItems: [],
+            email: 'harsh@abc.com',
+            items: [
+                { Name: 'Plant', Confidence: 99.71910858154297 },
+                { Name: 'Vegetable', Confidence: 98.99150085449219 },
+                { Name: 'Food', Confidence: 98.99150085449219 },
+                { Name: 'Broccoli', Confidence: 98.99150085449219 },
+                { Name: 'Banana', Confidence: 97.18341064453125 },
+                { Name: 'Fruit', Confidence: 97.18341064453125 },
+                { Name: 'Carrot', Confidence: 72.56779479980469 },
+            ],
         };
     }
 
@@ -88,12 +99,23 @@ class Checkout extends React.Component {
             this.handleNext();
         }
     };
+    handleScreenShot = (userdata) => {
+        // const data = new FormData();
+        // data.append('file', dataUri);
+        // data.append('name', 'name');
+        // data.append('description', 'description');
+        // axios.post('/api/rekognition/detectLabels', data).then((response) => {
+
+        axios.post('/api/order/postOrder', userdata).then((response) => {});
+
+        // });
+    };
     getStepContent = (step) => {
         switch (step) {
             case 0:
                 return <List items={[]} />;
             case 1:
-                return <Camera />;
+                return <Camera onTakePhoto={this.handleScreenShot(this.state)} />;
             case 2:
                 return <List items={stubData()} />;
             default:

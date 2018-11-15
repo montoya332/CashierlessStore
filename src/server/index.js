@@ -9,6 +9,7 @@ import { configureStore } from '../shared/store';
 import serverRender from './render';
 import paths from '../../config/paths';
 import rekognitionRouter from './rekognitionRouter';
+import orderRouter from './orderRouter';
 import cookieParser from 'cookie-parser';
 
 require('dotenv').config();
@@ -46,6 +47,7 @@ app.use(
 );
 
 app.use('/api/rekognition', rekognitionRouter);
+app.use('/api/order', orderRouter);
 
 app.use(serverRender());
 
