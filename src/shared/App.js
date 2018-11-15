@@ -13,29 +13,31 @@ import Signin from './pages/signin';
 import Orderhistory from './pages/orderhistory';
 
 import css from './App.module.css';
-import { Route } from 'react-router';
+import { Switch, Route } from 'react-router';
 
 type PropsT = {
     setLocale: (string) => {},
 };
 
+const NoMatch = () => <div>404</div>;
 class App extends React.PureComponent<PropsT> {
     setLanguage = (e: SyntheticEvent<HTMLButtonElement>) => {
         this.props.setLocale(e.target.value);
     };
     renderRoutes() {
         const { user } = this.props;
-        if (user.userId || user) {
+        if (user.userId) {
             //TODO: remove true , used to avoid signin for now
             return (
-                <div>
+                <Switch>
                     <Route path="/analytics" component={Analytics} />
                     <Route path="/order" component={Checkout} />
                     <Route path="/orderhistory" component={Orderhistory} />
                     <Route path="/products" component={Products} />
                     <Route path="/signout" component={Analytics} />
                     <Route path="/account" component={Analytics} />
-                </div>
+                    <Route component={NoMatch} />
+                </Switch>
             );
         }
         return (
@@ -50,7 +52,7 @@ class App extends React.PureComponent<PropsT> {
         return (
             <div className={css.wrapper}>
                 <Helmet defaultTitle={appName} titleTemplate={`%s – ${appName}`} />
-                <Dashboard showDrawer={!!user.userId || !!user}>{this.renderRoutes()}</Dashboard>
+                <Dashboard showDrawer={!!user.userId}>{this.renderRoutes()}</Dashboard>
             </div>
         );
     }
