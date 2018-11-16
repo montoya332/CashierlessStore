@@ -11,6 +11,7 @@ import Dashboard from './pages/dashboard';
 import Products from './pages/products';
 import Signin from './pages/signin';
 import Signup from './pages/signup';
+// import Home from './pages/home';
 import Orderhistory from './pages/orderhistory';
 
 import css from './App.module.css';
