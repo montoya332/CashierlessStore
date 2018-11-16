@@ -7,9 +7,13 @@
     "node": ">=8.9.0",
     "yarn": "^1.3.0"
   },
+    "main": "build/server/server.js",
+
   "scripts": {
     "analyze": "yarn build:with-stats && yarn start:analyzer",
+    "deploy": "yarn build && yarn server",
     "build": "cross-env NODE_ENV=production node scripts/build.js",
+    "server": "cross-env NODE_ENV=production node ./build/server/server.js",
     "build:with-stats": "cross-env NODE_ENV=production webpack --config config/webpack.config.js/client.prod.js --json > build/client/static/bundle-stats.json",
     "lint": "eslint ./src",
     "plop": "plop",
