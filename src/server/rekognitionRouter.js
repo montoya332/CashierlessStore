@@ -63,7 +63,7 @@ router.post('/signup', upload.single('file'), (req, res) => {
         const fileName = 'users-' + email + '-' + new Date().getTime() + '.png';
         saveImage(fileName, file, ({ err, bitmap }) => {
             if (err) return res.status(200).json({ err });
-            const userId = email.replaceAll('[^a-zA-Z0-9 ]', '');
+            const userId = email.replace(/[^a-zA-Z0-9 ]/g, '');
             indexFace({ bitmap, email, userId }, (err) => {
                 err && res.status(200).json({ err: 'Looks like you have an account already' });
                 res.status(200).json({ email, userId: email });

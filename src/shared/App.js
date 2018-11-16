@@ -21,7 +21,7 @@ type PropsT = {
     setLocale: (string) => {},
 };
 
-const NoMatch = () => <div>404</div>;
+const Page404 = () => <h1>404</h1>;
 class App extends React.PureComponent<PropsT> {
     setLanguage = (e: SyntheticEvent<HTMLButtonElement>) => {
         this.props.setLocale(e.target.value);
@@ -37,7 +37,8 @@ class App extends React.PureComponent<PropsT> {
                     <Route path="/orderhistory" component={Orderhistory} />
                     <Route path="/products" component={Products} />
                     <Route path="/account" component={Analytics} />
-                    <Route component={NoMatch} />
+                    <Route path="/404" component={Page404} />
+                    <Route component={Checkout} />
                 </Switch>
             );
         }

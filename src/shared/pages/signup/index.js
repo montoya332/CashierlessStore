@@ -70,7 +70,7 @@ class SignIn extends React.PureComponent {
         data.append('file', dataUri);
         data.append('email', email);
         axios.post('/api/rekognition/signup', data).then(({ data }) => {
-            if (data && data.ExternalImageId) {
+            if (data && data.userId) {
                 this.props.signInUser(data);
             }
         });
