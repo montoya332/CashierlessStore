@@ -16,6 +16,9 @@ const storage = multer.diskStorage({
     },
 });
 const upload = multer({ storage });
+router.get('/signout', (req, res) => {
+    res.cookie('userId', '', { maxAge: 900000 }).send({ userId: '' });
+});
 router.post('/searchFacesByImage', upload.single('file'), (req, res) => {
     const callback = (err, data) => {
         if (err) {
@@ -60,8 +63,9 @@ router.post('/signup', upload.single('file'), (req, res) => {
         const fileName = 'users-' + email + '-' + new Date().getTime() + '.png';
         saveImage(fileName, file, ({ err, bitmap }) => {
             if (err) return res.status(200).json({ err });
-            indexFace({ bitmap, email }, (err) => {
-                err && res.status(200).json({ err });
+            const userId = email.replaceAll('[^a-zA-Z0-9 ]', '');
+            indexFace({ bitmap, email, userId }, (err) => {
+                err && res.status(200).json({ err: 'Looks like you have an account already' });
                 res.status(200).json({ email, userId: email });
             });
         });
@@ -119,19 +123,18 @@ function saveImage(fileName, file, callback = () => {}) {
     });
 }
 function indexFace(data = {}, callback = () => {}) {
-    if (data.email && data.bitmap) {
+    if (data.userId && data.bitmap) {
         rekognition.indexFaces(
             {
                 CollectionId: config.collectionName,
                 Image: {
                     Bytes: data.bitmap,
                 },
-                ExternalImageId: data.email,
+                ExternalImageId: data.userId,
                 DetectionAttributes: ['DEFAULT'],
                 MaxFaces: 1,
                 QualityFilter: 'AUTO',
             },
-
             callback
         );
     } else {
