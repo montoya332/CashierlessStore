@@ -53,8 +53,6 @@ class SignIn extends React.PureComponent {
     handleUploadFile(dataUri) {
         const data = new FormData();
         data.append('file', dataUri);
-        data.append('name', 'name');
-        data.append('description', 'description');
         axios.post('/api/rekognition/searchFacesByImage', data).then((response) => {
             if (response.data && response.data.ExternalImageId) {
                 this.props.signInUser(response.data);
