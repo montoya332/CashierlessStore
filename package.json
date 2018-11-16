@@ -16,7 +16,7 @@
     "build:with-stats": "cross-env NODE_ENV=production webpack --config config/webpack.config.js/client.prod.js --json > build/client/static/bundle-stats.json",
     "lint": "eslint ./src",
     "plop": "plop",
-    "start": "cross-env NODE_ENV=development PORT=8081 node scripts/start.js",
+    "start": "cross-env NODE_ENV=development PORT=8080 node scripts/start.js",
     "start:analyzer": "webpack-bundle-analyzer build/client/static/bundle-stats.json",
     "test": "node scripts/test.js --env=jsdom",
     "test:update": "npm run test --updateSnapshot"
