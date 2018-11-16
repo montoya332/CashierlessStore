@@ -75,11 +75,14 @@ const build = async () => {
     try {
         await serverPromise;
         await clientPromise;
-        await generateStaticHTML();
+        if (process.env.SANITYTEST) {
+            await generateStaticHTML();
+        }
         logMessage('Done!', 'info');
     } catch (error) {
         logMessage(error, 'error');
     }
+    process.exit();
 };
 
 build();
