@@ -7,7 +7,7 @@ import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import PeopleIcon from '@material-ui/icons/People';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import AssignmentIcon from '@material-ui/icons/Assignment';
-// import SignOutIcon from '@material-ui/icons/ExitToApp';
+import SignOutIcon from '@material-ui/icons/ExitToApp';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 const handleSignOut = () =>
@@ -54,7 +54,7 @@ export const secondaryListItems = (
         </ListItem>
         <ListItem component={Link} to="/signin" onClick={handleSignOut} button>
             <ListItemIcon>
-                <PeopleIcon />
+                <SignOutIcon />
             </ListItemIcon>
             <ListItemText primary="Sign out" />
         </ListItem>

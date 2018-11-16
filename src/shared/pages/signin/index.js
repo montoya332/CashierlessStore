@@ -10,6 +10,7 @@ import Camera from '../../components/camera';
 import { connect } from 'react-redux';
 import { signInUser } from '../../store/app/actions';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const styles = (theme) => ({
     main: {
@@ -73,6 +74,11 @@ class SignIn extends React.PureComponent {
                     <Typography component="h1" variant="h5">
                         Sign in
                     </Typography>
+                    <Link to="/signup">
+                        <Typography variant="caption" gutterBottom>
+                            Dont Have and account? Sign up
+                        </Typography>
+                    </Link>
                     <Camera onTakePhoto={this.handleUploadFile} />
                 </Paper>
             </main>
