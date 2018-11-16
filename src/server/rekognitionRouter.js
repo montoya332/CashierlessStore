@@ -3,7 +3,13 @@ import { Router } from 'express';
 import multer from 'multer';
 const fs = require('fs-extra');
 const AWS = require('aws-sdk');
-let config = {}
+let config = {
+    accessKeyId: '',
+    secretAccessKey: '',
+    region: 'us-west-2',
+    collectionName: 'collectionname',
+    bucketName: 'sjsucmpe280',
+};
 try {
     config = require('../../config.json');
 } catch {
