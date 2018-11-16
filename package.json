@@ -1,6 +1,6 @@
 {
   "name": "CashierlessStore",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "author": "Team SJSU",
   "license": "MIT",
   "engines": {
@@ -9,8 +9,8 @@
   },
   "main": "build/server/server.js",
   "scripts": {
-    "analyze": "yarn build:with-stats && yarn start:analyzer",
-    "deploy": "yarn build && yarn server",
+    "analyze": "npm run build:with-stats && npm run start:analyzer",
+    "deploy": "npm run build && npm run server",
     "build": "cross-env NODE_ENV=production node scripts/build.js",
     "server": "cross-env NODE_ENV=production node ./build/server/server.js",
     "build:with-stats": "cross-env NODE_ENV=production webpack --config config/webpack.config.js/client.prod.js --json > build/client/static/bundle-stats.json",
@@ -19,7 +19,7 @@
     "start": "cross-env NODE_ENV=development PORT=8081 node scripts/start.js",
     "start:analyzer": "webpack-bundle-analyzer build/client/static/bundle-stats.json",
     "test": "node scripts/test.js --env=jsdom",
-    "test:update": "yarn test --updateSnapshot"
+    "test:update": "npm run test --updateSnapshot"
   },
   "lint-staged": {
     "*.{js,css}": [
