@@ -7,8 +7,13 @@ import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import PeopleIcon from '@material-ui/icons/People';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import AssignmentIcon from '@material-ui/icons/Assignment';
+import SignOutIcon from '@material-ui/icons/ExitToApp';
 import { Link } from 'react-router-dom';
-//TODO: Remove onClick={() => window.location.reload() } route change not working
+import axios from 'axios';
+const handleSignOut = () =>
+    axios.get('/api/rekognition/signout').then(() => {
+        window.location.reload();
+    });
 export const mainListItems = (
     <div>
         <ListItem component={Link} to="/account" button>
@@ -47,11 +52,11 @@ export const secondaryListItems = (
             </ListItemIcon>
             <ListItemText primary="Products" />
         </ListItem>
-        <ListItem component={Link} to="/signin" button>
+        <ListItem component={Link} to="/signin" onClick={handleSignOut} button>
             <ListItemIcon>
-                <AssignmentIcon />
+                <SignOutIcon />
             </ListItemIcon>
-            <ListItemText primary="signin" />
+            <ListItemText primary="Sign out" />
         </ListItem>
     </div>
 );

@@ -16,6 +16,9 @@ const storage = multer.diskStorage({
     },
 });
 const upload = multer({ storage });
+router.get('/signout', (req, res) => {
+    res.cookie('userId', '', { maxAge: 900000 }).send({ userId: '' });
+});
 router.post('/searchFacesByImage', upload.single('file'), (req, res) => {
     const callback = (err, data) => {
         if (err) {
@@ -49,6 +52,25 @@ router.post('/searchFacesByImage', upload.single('file'), (req, res) => {
         });
     }
 });
+router.post('/signup', upload.single('file'), (req, res) => {
+    const { email, file } = req.body;
+    const user = false; //TODO: DB user exist
+    if (!email || !file) {
+        res.status(200).json({ msg: 'Missing User Data' });
+    } else if (user) {
+        res.status(200).json({ msg: 'Looks like you have an account already' });
+    } else {
+        const fileName = 'users-' + email + '-' + new Date().getTime() + '.png';
+        saveImage(fileName, file, ({ err, bitmap }) => {
+            if (err) return res.status(200).json({ err });
+            const userId = email.replaceAll('[^a-zA-Z0-9 ]', '');
+            indexFace({ bitmap, email, userId }, (err) => {
+                err && res.status(200).json({ err: 'Looks like you have an account already' });
+                res.status(200).json({ email, userId: email });
+            });
+        });
+    }
+});
 router.post('/detectLabels', upload.single('file'), (req, res) => {
     const file = req.file;
     const meta = req.body;
@@ -77,15 +99,6 @@ router.get('/getObject', (req, res) => {
         res.send(data);
     });
 });
-router.get('/indexFace', (req, res) => {
-    const file = req.query.s3file; //'arturo_montoya.jpg';
-    indexFace(file, (err, data) => {
-        if (err) {
-            res.status(500).json(err);
-        }
-        res.send(data);
-    });
-});
 function searchFacesByImage(bitmap, callback = () => {}) {
     rekognition.searchFacesByImage(
         {
@@ -99,98 +112,39 @@ function searchFacesByImage(bitmap, callback = () => {}) {
         callback
     );
 }
+function saveImage(fileName, file, callback = () => {}) {
+    const filePath = './uploads/' + fileName;
+    let base64Data = file.replace(/^data:image\/png;base64,/, '');
+    base64Data = base64Data.replace(/^data:image\/jpeg;base64,/, '');
+    fs.writeFile(filePath, base64Data, 'base64', (err) => {
+        if (err) return callback({ err });
+        const bitmap = fs.readFileSync(filePath);
+        callback({ bitmap });
+    });
+}
+function indexFace(data = {}, callback = () => {}) {
+    if (data.userId && data.bitmap) {
+        rekognition.indexFaces(
+            {
+                CollectionId: config.collectionName,
+                Image: {
+                    Bytes: data.bitmap,
+                },
+                ExternalImageId: data.userId,
+                DetectionAttributes: ['DEFAULT'],
+                MaxFaces: 1,
+                QualityFilter: 'AUTO',
+            },
+            callback
+        );
+    } else {
+        callback({ err: 'Missing Data' });
+    }
+}
 function getImageUrl(file = '') {
     if (file) {
         return 'https://s3-' + config.region + '.amazonaws.com/' + config.bucketName + '/' + file;
     }
 }
-function indexFace(name, done = () => {}) {
-    rekognition.indexFaces(
-        {
-            CollectionId: config.collectionName,
-            Image: {
-                S3Object: {
-                    Bucket: config.bucketName,
-                    Name: name,
-                },
-            },
-            ExternalImageId: name,
-            DetectionAttributes: ['DEFAULT'],
-            MaxFaces: 1,
-            QualityFilter: 'AUTO',
-        },
-        done
-    );
-}
-//=============================================================
-router.get('/searchFacesByImageTest', (req, res) => {
-    const name = 'Grocery-items.jpg' || 'arturo_montoya3.jpg';
 
-    rekognition.searchFacesByImage(
-        {
-            CollectionId: config.collectionName,
-            FaceMatchThreshold: 70,
-            Image: {
-                S3Object: {
-                    Bucket: config.bucketName,
-                    Name: name,
-                },
-            },
-            MaxFaces: 1,
-        },
-        (err, data) => {
-            if (err) {
-                res.send(err);
-            } else {
-                if (data.FaceMatches && data.FaceMatches.length > 0 && data.FaceMatches[0].Face) {
-                    res.send(data.FaceMatches[0].Face);
-                } else {
-                    res.send({ error: 'Not recognized' });
-                }
-            }
-        }
-    );
-});
 export default router;
-
-/*  ====================== TODO ====================== */
-
-// function compareFaces(bucketName = config.bucketName, name, withName, callback) {
-//     const params = {
-//         SimilarityThreshold: 90,
-//         SourceImage: {
-//             S3Object: {
-//                 Bucket: bucketName,
-//                 Name: name,
-//             },
-//         },
-//         TargetImage: {
-//             S3Object: {
-//                 Bucket: bucketName,
-//                 Name: withName,
-//             },
-//         },
-//     };
-//     rekognition.compareFaces(params, callback);
-// }
-
-// function getObject(bucketName = config.bucketName, key = 'arturo_montoya3.jpg') {
-//     s3.getObject({ Bucket: bucketName, Key: key }, (error, data) => {
-//         if (error != null) {
-//             console.log('Failed to retrieve an object: ' + error);
-//         } else {
-//             console.log('Loaded ' + data.ContentLength + ' bytes');
-//             console.log(data.Body);
-//         }
-//     });
-// }
-
-// function createBucket(bucketName = config.bucketName) {
-//     s3.createBucket({ Bucket: bucketName }, () => {
-//         const params = { Bucket: bucketName, Key: keyName, Body: 'Hello World!' };
-//         s3.putObject(params, (err, data) => {
-//             if (err) console.log(err);
-//             else console.log('Successfully uploaded data to ' + config.bucketName + '/' + keyName);
-//         });
-//     });
-// }

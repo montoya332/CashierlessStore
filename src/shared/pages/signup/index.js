@@ -1,7 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Avatar from '@material-ui/core/Avatar';
+import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import FormControl from '@material-ui/core/FormControl';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
 import LockIcon from '@material-ui/icons/LockOutlined';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
@@ -10,7 +14,6 @@ import Camera from '../../components/camera';
 import { connect } from 'react-redux';
 import { signInUser } from '../../store/app/actions';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
 
 const styles = (theme) => ({
     main: {
@@ -48,17 +51,33 @@ const styles = (theme) => ({
 class SignIn extends React.PureComponent {
     constructor(props) {
         super(props);
+        this.state = {
+            dataUri: '',
+            email: '',
+        };
         this.handleUploadFile = this.handleUploadFile.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleChange = this.handleChange.bind(this);
     }
-    handleUploadFile(dataUri) {
+    handleChange(event) {
+        const { value, name } = event.target;
+        name && this.setState({ [name]: value });
+    }
+    handleSubmit(e) {
+        const { dataUri, email } = this.state;
+        e && e.preventDefault();
         const data = new FormData();
         data.append('file', dataUri);
-        data.append('name', 'name');
-        data.append('description', 'description');
-        axios.post('/api/rekognition/searchFacesByImage', data).then((response) => {
-            if (response.data && response.data.ExternalImageId) {
-                this.props.signInUser(response.data);
+        data.append('email', email);
+        axios.post('/api/rekognition/signup', data).then(({ data }) => {
+            if (data && data.ExternalImageId) {
+                this.props.signInUser(data);
             }
+        });
+    }
+    handleUploadFile(dataUri) {
+        this.setState({ dataUri }, () => {
+            this.state.email && this.handleSubmit();
         });
     }
     render() {
@@ -72,14 +91,34 @@ class SignIn extends React.PureComponent {
                         <LockIcon />
                     </Avatar>
                     <Typography component="h1" variant="h5">
-                        Sign in
+                        Sign up
                     </Typography>
-                    <Link to="/signup">
-                        <Typography variant="caption" gutterBottom>
-                            Dont Have and account? Sign up
-                        </Typography>
-                    </Link>
-                    <Camera onTakePhoto={this.handleUploadFile} />
+                    <form className={classes.form} onSubmit={this.handleSubmit}>
+                        <FormControl margin="normal" required fullWidth>
+                            <InputLabel htmlFor="email">Email Address</InputLabel>
+                            <Input
+                                id="email"
+                                type="email"
+                                name="email"
+                                autoComplete="email"
+                                autoFocus
+                                value={this.state.email}
+                                onChange={this.handleChange}
+                            />
+                        </FormControl>
+
+                        <Camera onTakePhoto={this.handleUploadFile} />
+
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            className={classes.submit}
+                        >
+                            Sign in
+                        </Button>
+                    </form>
                 </Paper>
             </main>
         );
