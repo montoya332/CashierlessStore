@@ -73,10 +73,10 @@ app.use((err, req, res, next) => {
     });
 });
 
-app.listen(process.env.PORT || 8500, () => {
+app.listen(process.env.PORT || 8080, () => {
     console.log(
         `[${new Date().toISOString()}]`,
-        chalk.blue(`App is running: 🌎 http://localhost:${process.env.PORT || 8500}`)
+        chalk.blue(`App is running: 🌎 http://localhost:${process.env.PORT || 8080}`)
     );
 });
 
