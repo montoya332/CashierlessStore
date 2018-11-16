@@ -2,9 +2,13 @@
 import { Router } from 'express';
 import multer from 'multer';
 const fs = require('fs-extra');
-const config = require('../../config.json');
 const AWS = require('aws-sdk');
-
+let config = {}
+try {
+    config = require('../../config.json');
+} catch {
+    console.log('missing config file');
+}
 AWS.config.update(config);
 const rekognition = new AWS.Rekognition();
 const s3 = new AWS.S3();
