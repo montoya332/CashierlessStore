@@ -129,12 +129,14 @@ SignIn.propTypes = {
     classes: PropTypes.object.isRequired,
     signInUser: PropTypes.func,
 };
-const SignInWithStyles = withStyles(styles)(SignIn);
+
 const mapDispatchToProps = { signInUser };
 const mapStateToProps = () => {
     return {};
 };
-export default connect(
+const SignInWithConnected = connect(
     mapStateToProps,
     mapDispatchToProps
-)(SignInWithStyles);
+)(SignIn);
+
+export default withStyles(styles)(SignInWithConnected);
