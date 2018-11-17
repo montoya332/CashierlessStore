@@ -86,6 +86,7 @@
     "postcss-loader": "^3.0.0",
     "postcss-nested": "^4.1.0",
     "postcss-normalize": "^7.0.1",
+    "prop-types": "^15.6.2",
     "react": "^16.6.1",
     "react-dom": "^16.6.1",
     "react-helmet": "^5.2.0",
