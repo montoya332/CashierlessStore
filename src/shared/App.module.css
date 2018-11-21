@@ -15,7 +15,10 @@
         font-size: var(--font-size-h1);
     }
 }
-
+svg {
+    height: 1em;
+    width: 1em;
+}
 .reactLogo {
     vertical-align: middle;
     height: 48px;
