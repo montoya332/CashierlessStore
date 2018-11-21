@@ -10,6 +10,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import List from '../../components/list';
 import Camera from '../../components/camera';
+import css from '../../App.module.css';
 
 const styles = (theme) => ({
     appBar: {
@@ -108,7 +109,7 @@ class Checkout extends React.Component {
         return (
             <React.Fragment>
                 <CssBaseline />
-                <Paper className={classes.paper}>
+                <Paper className={classes.paper + ' ' + css.muiIconWrapper}>
                     <Typography component="h1" variant="h4" align="center">
                         Checkout
                     </Typography>

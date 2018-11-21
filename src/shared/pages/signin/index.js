@@ -11,6 +11,7 @@ import { connect } from 'react-redux';
 import { signInUser } from '../../store/app/actions';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import css from '../../App.module.css';
 
 const styles = (theme) => ({
     main: {
@@ -67,7 +68,7 @@ class SignIn extends React.PureComponent {
                 <CssBaseline />
                 <Paper className={classes.paper}>
                     <Avatar className={classes.avatar}>
-                        <LockIcon />
+                        <LockIcon className={css.muiIcon} />
                     </Avatar>
                     <Typography component="h1" variant="h5">
                         Sign in

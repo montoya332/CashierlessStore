@@ -10,6 +10,8 @@ import AssignmentIcon from '@material-ui/icons/Assignment';
 import SignOutIcon from '@material-ui/icons/ExitToApp';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import css from '../../App.module.css';
+
 const handleSignOut = () =>
     axios.get('/api/rekognition/signout').then(() => {
         window.location.reload();
@@ -18,19 +20,19 @@ export const mainListItems = (
     <div>
         <ListItem component={Link} to="/account" button>
             <ListItemIcon>
-                <PeopleIcon />
+                <PeopleIcon className={css.muiIcon} />
             </ListItemIcon>
             <ListItemText primary="Manage Account" />
         </ListItem>
         <ListItem component={Link} to="/order" button>
             <ListItemIcon>
-                <ShoppingCartIcon />
+                <ShoppingCartIcon className={css.muiIcon} />
             </ListItemIcon>
             <ListItemText primary="Order" />
         </ListItem>
         <ListItem component={Link} to="/analytics" button>
             <ListItemIcon>
-                <BarChartIcon />
+                <BarChartIcon className={css.muiIcon} />
             </ListItemIcon>
             <ListItemText primary="Analytics" />
         </ListItem>
@@ -42,19 +44,19 @@ export const secondaryListItems = (
         <ListSubheader inset>Saved reports</ListSubheader>
         <ListItem component={Link} to="/orderhistory" button>
             <ListItemIcon>
-                <AssignmentIcon />
+                <AssignmentIcon className={css.muiIcon} />
             </ListItemIcon>
             <ListItemText primary="Order History" />
         </ListItem>
         <ListItem component={Link} to="/products" button>
             <ListItemIcon>
-                <AssignmentIcon />
+                <AssignmentIcon className={css.muiIcon} />
             </ListItemIcon>
             <ListItemText primary="Products" />
         </ListItem>
         <ListItem component={Link} to="/signin" onClick={handleSignOut} button>
             <ListItemIcon>
-                <SignOutIcon />
+                <SignOutIcon className={css.muiIcon} />
             </ListItemIcon>
             <ListItemText primary="Sign out" />
         </ListItem>

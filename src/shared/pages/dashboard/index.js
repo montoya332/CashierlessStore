@@ -13,6 +13,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { mainListItems, secondaryListItems } from './listItems';
+import css from '../../App.module.css';
 
 const drawerWidth = 240;
 
@@ -120,8 +121,8 @@ class Dashboard extends React.Component {
                     open={this.state.open}
                 >
                     <div className={classes.toolbarIcon}>
-                        <IconButton onClick={this.handleDrawerClose}>
-                            <ChevronLeftIcon />
+                        <IconButton onClick={this.handleDrawerClose} className={css.muiIcon}>
+                            <ChevronLeftIcon className={css.muiIcon} />
                         </IconButton>
                     </div>
                     <Divider />
@@ -148,11 +149,12 @@ class Dashboard extends React.Component {
                             aria-label="Open drawer"
                             onClick={handleDrawerOpen}
                             className={classNames(
+                                'mui-icon',
                                 classes.menuButton,
                                 this.state.open && classes.menuButtonHidden
                             )}
                         >
-                            {showDrawer && <MenuIcon />}
+                            {showDrawer && <MenuIcon className={css.muiIcon} />}
                         </IconButton>
 
                         <Typography
