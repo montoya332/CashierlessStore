@@ -11,7 +11,7 @@ let config = {
     bucketName: 'sjsucmpe280',
 };
 try {
-    config = require('../../config.json');
+    config = require('../../../config.json');
 } catch {
     console.log('missing config file');
 }

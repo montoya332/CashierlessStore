@@ -7,6 +7,7 @@ const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
 const paths = require('../config/paths');
 const { logMessage, compilerPromise } = require('./utils');
+const openBrowser = require('react-dev-utils/openBrowser');
 
 const app = express();
 
@@ -101,7 +102,9 @@ const start = async () => {
         script: `${paths.serverBuild}/server.js`,
         ignore: ['src', 'scripts', 'config', './*.*', 'build/client'],
     });
-
+    if (openBrowser(`http://localhost:${process.env.PORT || WEBPACK_PORT}`)) {
+        console.log('The browser tab has been opened!');
+    }
     script.on('restart', () => {
         logMessage('Server side app has been restarted.', 'warning');
     });

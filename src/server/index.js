@@ -8,7 +8,7 @@ import bodyParser from 'body-parser';
 import { configureStore } from '../shared/store';
 import serverRender from './render';
 import paths from '../../config/paths';
-import rekognitionRouter from './rekognitionRouter';
+import rekognitionRouter from './routes/rekognition';
 import cookieParser from 'cookie-parser';
 
 require('dotenv').config();
