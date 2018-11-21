@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withNamespaces } from 'react-i18next';
-import { setLocale } from './store/app/actions';
+import { setLocale, signOutUser } from './store/app/actions';
 import Analytics from './pages/analytics';
 import Checkout from './pages/checkout';
 import Dashboard from './pages/dashboard';
@@ -16,6 +16,7 @@ import Orderhistory from './pages/orderhistory';
 
 import css from './App.module.css';
 import { Switch, Route } from 'react-router';
+import axios from 'axios';
 
 type PropsT = {
     setLocale: (string) => {},
@@ -26,6 +27,12 @@ class App extends React.PureComponent<PropsT> {
     setLanguage = (e: SyntheticEvent<HTMLButtonElement>) => {
         this.props.setLocale(e.target.value);
     };
+    handleSignOut = () => {
+        axios.get('/api/rekognition/signout').then(() => {
+            this.props.signOutUser();
+        });
+    };
+
     renderRoutes() {
         const { user } = this.props;
         if (user.userId) {
@@ -55,15 +62,19 @@ class App extends React.PureComponent<PropsT> {
         return (
             <div className={css.wrapper}>
                 <Helmet defaultTitle={appName} titleTemplate={`%s – ${appName}`} />
-                <Dashboard showDrawer={!!user.userId}>{this.renderRoutes()}</Dashboard>
+                <Dashboard handleSignOut={this.handleSignOut} showDrawer={!!user.userId}>
+                    {this.renderRoutes()}
+                </Dashboard>
             </div>
         );
     }
 }
 App.propTypes = {
     user: PropTypes.object,
+    signOutUser: PropTypes.func,
 };
 const mapDispatchToProps = {
+    signOutUser,
     setLocale,
 };
 const mapStateToProps = (state) => {

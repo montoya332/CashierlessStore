@@ -15,6 +15,10 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { mainListItems, secondaryListItems } from './listItems';
 import css from '../../App.module.css';
 
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import MenuItem from '@material-ui/core/MenuItem';
+import Menu from '@material-ui/core/Menu';
+
 const drawerWidth = 240;
 
 const styles = (theme) => ({
@@ -97,6 +101,7 @@ const styles = (theme) => ({
 class Dashboard extends React.Component {
     state = {
         open: false,
+        anchorEl: null,
     };
 
     handleDrawerOpen = () => {
@@ -105,6 +110,19 @@ class Dashboard extends React.Component {
 
     handleDrawerClose = () => {
         this.setState({ open: false });
+    };
+    handle = () => {};
+
+    handleMenu = (event) => {
+        this.setState({ anchorEl: event.currentTarget });
+    };
+
+    handleClose = () => {
+        this.setState({ anchorEl: null });
+    };
+    handleSignOut = () => {
+        this.handleClose();
+        this.props.handleSignOut && this.props.handleSignOut();
     };
     renderDrawer() {
         const { classes, showDrawer } = this.props;
@@ -133,9 +151,41 @@ class Dashboard extends React.Component {
             );
         }
     }
+    renderAccountMenu() {
+        const anchorEl = Boolean(this.state.anchorEl);
+        return (
+            <div>
+                <IconButton
+                    aria-owns={anchorEl ? 'menu-appbar' : undefined}
+                    aria-haspopup="true"
+                    onClick={this.handleMenu}
+                    color="inherit"
+                >
+                    <AccountCircle />
+                </IconButton>
+                <Menu
+                    id="menu-appbar"
+                    anchorEl={this.state.anchorEl}
+                    anchorOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                    }}
+                    open={anchorEl}
+                    onClose={this.handleClose}
+                >
+                    <MenuItem onClick={this.handleSignOut}>Signout</MenuItem>
+                </Menu>
+            </div>
+        );
+    }
     render() {
         const { classes, showDrawer } = this.props;
         const handleDrawerOpen = showDrawer ? this.handleDrawerOpen : undefined;
+
         return (
             <div className={classes.root}>
                 <CssBaseline />
@@ -166,6 +216,7 @@ class Dashboard extends React.Component {
                         >
                             Cashierless Store
                         </Typography>
+                        {showDrawer && this.renderAccountMenu()}
                     </Toolbar>
                 </AppBar>
                 {this.renderDrawer()}
@@ -182,6 +233,7 @@ Dashboard.propTypes = {
     classes: PropTypes.object.isRequired,
     children: PropTypes.node,
     showDrawer: PropTypes.bool,
+    handleSignOut: PropTypes.func,
 };
 
 export default withStyles(styles)(Dashboard);

@@ -16,3 +16,7 @@ export const signInUser = (user = {}) => ({
     type: ActionTypes.SIGNIN,
     payload: user,
 });
+export const signOutUser = () => ({
+    type: ActionTypes.SIGNOUT,
+    payload: {},
+});

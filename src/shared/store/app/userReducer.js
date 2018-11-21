@@ -12,6 +12,9 @@ export default (state = initialState, action) => {
                 ...payload,
             };
         }
+        case ActionTypes.SIGNOUT: {
+            return payload;
+        }
     }
 
     return state;
