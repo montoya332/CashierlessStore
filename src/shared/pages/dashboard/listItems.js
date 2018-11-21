@@ -6,8 +6,9 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import PeopleIcon from '@material-ui/icons/People';
 import BarChartIcon from '@material-ui/icons/BarChart';
-import AssignmentIcon from '@material-ui/icons/Assignment';
 import SignOutIcon from '@material-ui/icons/ExitToApp';
+import HistoryIcon from '@material-ui/icons/History';
+import ListIcon from '@material-ui/icons/List';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import css from '../../App.module.css';
@@ -44,16 +45,19 @@ export const secondaryListItems = (
         <ListSubheader inset>Saved reports</ListSubheader>
         <ListItem component={Link} to="/orderhistory" button>
             <ListItemIcon>
-                <AssignmentIcon className={css.muiIcon} />
+                <HistoryIcon className={css.muiIcon} />
             </ListItemIcon>
             <ListItemText primary="Order History" />
         </ListItem>
         <ListItem component={Link} to="/products" button>
             <ListItemIcon>
-                <AssignmentIcon className={css.muiIcon} />
+                <ListIcon className={css.muiIcon} />
             </ListItemIcon>
             <ListItemText primary="Products" />
         </ListItem>
+        <br />
+        <br />
+        <br />
         <ListItem component={Link} to="/signin" onClick={handleSignOut} button>
             <ListItemIcon>
                 <SignOutIcon className={css.muiIcon} />
