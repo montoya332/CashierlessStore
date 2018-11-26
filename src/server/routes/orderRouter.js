@@ -5,10 +5,10 @@ const assert = require('assert');
 
 const url = 'mongodb://admin:admin12345@ds145981.mlab.com:45981/shopez';
 
-router.get('/getOrder', function(req, res, next) {
+router.get('/getOrder', (req, res) => {
     MongoClient.connect(
         url,
-        function(err, client) {
+        (err, client) => {
             assert.equal(null, err);
             console.log('Connected successfully to server');
 
@@ -20,7 +20,7 @@ router.get('/getOrder', function(req, res, next) {
 
             db.collection('orders')
                 .find(query)
-                .toArray(function(err, result) {
+                .toArray((err, result) => {
                     if (err) throw err;
                     res.status(201).json({
                         items: result[0].items,
@@ -32,7 +32,7 @@ router.get('/getOrder', function(req, res, next) {
     );
 });
 
-router.post('/postOrder', (req, res, next) => {
+router.post('/postOrder', (req, res) => {
     console.log(req);
 
     MongoClient.connect(
@@ -60,10 +60,10 @@ router.post('/postOrder', (req, res, next) => {
                 console.log(user);
                 console.log(err);
 
-                if (user == null) {
+                if (!user) {
                     console.log('create and update');
                     db.collection('orders').insertOne(query1, (err, result) => {
-                        console.log('Created new collection');
+                        console.log('Created new collection', result);
                     });
 
                     db.collection('orders').updateOne(
@@ -115,10 +115,10 @@ router.post('/postOrder', (req, res, next) => {
     );
 });
 
-router.get('/getPrice', function(req, res, next) {
+router.get('/getPrice', (req, res) => {
     MongoClient.connect(
         url,
-        function(err, client) {
+        (err, client) => {
             assert.equal(null, err);
             console.log('Connected successfully to server');
 
@@ -129,7 +129,7 @@ router.get('/getPrice', function(req, res, next) {
 
             db.collection('items')
                 .find(query)
-                .toArray(function(err, result) {
+                .toArray((err, result) => {
                     if (err) throw err;
                     res.status(201).json({
                         price: result[0].price,

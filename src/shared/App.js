@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { withNamespaces } from 'react-i18next';
 import { setLocale, signOutUser } from './store/app/actions';
 import Analytics from './pages/analytics';
-import Checkout from './pages/Checkout';
+import Checkout from './pages/checkoutPage';
 import Dashboard from './pages/dashboard';
 import Products from './pages/products';
 import Signin from './pages/signin';
