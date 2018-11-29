@@ -1,13 +1,13 @@
 import { MongoClient } from 'mongodb';
 
 const url = 'mongodb://admin:admin12345@ds145981.mlab.com:45981/shopez';
-//TODO: client shoudl
+//TODO: return Promise
 class Client {
     constructor() {
-        this.client = this.get();
+        // this.connect();
     }
     connect(done) {
-        MongoClient.connect(
+        return MongoClient.connect(
             url,
             (err, client) => {
                 this.client = client;
@@ -15,20 +15,13 @@ class Client {
             }
         );
     }
-    get() {
-        if (this.client) {
-            this.connect();
-        }
-        return this.client;
-    }
-    getDB() {
-        const client = this.get();
-        if (!client) {
-            console.log('Error ');
-            return {};
-        }
-        const db = client.db('shopez');
-        return db;
+    getDB(done) {
+        this.connect((err, client) => {
+            if (err) {
+                done(err, client);
+            }
+            done(err, client, client.db('shopez'));
+        });
     }
 }
-export default Client;
+export default new Client();
