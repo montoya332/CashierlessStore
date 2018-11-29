@@ -51,9 +51,10 @@ class Account extends React.Component {
         this.state = {};
     }
     handleSubmit = (e) => {
+        const { user } = this.props;
+
         e.preventDefault();
-        const data = this.state;
-        console.log(this.state);
+        const data = { email: user.email, ...this.state };
         axios.put('/api/users', data).then(({ data }) => {
             if (data && data.userId) {
                 //this.props.signInUser(data);
