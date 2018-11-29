@@ -8,9 +8,17 @@ const MappedList = (props) => (
     <List>
         {props.items &&
             props.items.map((item, key) => {
+                var price;
+                if (item.Name == 'Plant') {
+                    price = 5;
+                } else {
+                    price = 10;
+                }
                 return (
                     <ListItem key={key}>
                         <ListItemText primary={item.Name || ''} />
+
+                        <p>{price}</p>
                     </ListItem>
                 );
             })}

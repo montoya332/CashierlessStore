@@ -9,6 +9,7 @@ import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import List from '../../components/list';
+import List2 from '../../components/list/List2';
 import Camera from '../../components/camera';
 import css from '../../App.module.css';
 import axios from 'axios/index';
@@ -72,10 +73,22 @@ class Checkout extends React.Component {
         };
     }
 
-    handleNext = () => {
-        this.setState((state) => ({
-            activeStep: state.activeStep + 1,
-        }));
+    handleNext = (data) => {
+        if (this.state.activeStep == 1) {
+            axios.post('/api/order/getOrder', data).then((response) => {
+                console.log(response);
+                this.setState({
+                    todisplay: response.data.items,
+                });
+            });
+            this.setState((state) => ({
+                activeStep: state.activeStep + 1,
+            }));
+        } else {
+            this.setState((state) => ({
+                activeStep: state.activeStep + 1,
+            }));
+        }
     };
 
     handleBack = () => {
@@ -105,12 +118,6 @@ class Checkout extends React.Component {
     handleScreenShot = (data) => {
         axios.post('/api/order/postOrder', data).then((response) => {
             console.log('added to cart');
-            axios.post('/api/order/getOrder', data).then((response) => {
-                console.log(response);
-                this.setState({
-                    todisplay: response.data.items,
-                });
-            });
         });
     };
 
@@ -121,7 +128,7 @@ class Checkout extends React.Component {
             case 0:
                 return <List items={[]} />;
             case 1:
-                return <Camera onTakePhoto={this.handleScreenShot(this.state)} />;
+                return <Camera onTakePhoto={() => this.handleScreenShot(this.state)} />;
             case 2:
                 return <List items={this.state.todisplay} />;
             default:
@@ -174,7 +181,7 @@ class Checkout extends React.Component {
                                     <Button
                                         variant="contained"
                                         color="primary"
-                                        onClick={this.handleNext}
+                                        onClick={() => this.handleNext(this.state)}
                                         className={classes.button}
                                     >
                                         {activeStep === steps.length - 1 ? 'Place order' : 'Next'}

@@ -115,7 +115,7 @@ router.post('/postOrder', (req, res) => {
     );
 });
 
-router.get('/getPrice', (req, res) => {
+router.post('/getPrice', (req, res) => {
     MongoClient.connect(
         url,
         (err, client) => {
