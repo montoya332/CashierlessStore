@@ -12,6 +12,7 @@ import List from '../../components/list';
 import Camera from '../../components/camera';
 import css from '../../App.module.css';
 import axios from 'axios/index';
+import { connect } from 'react-redux';
 
 const styles = (theme) => ({
     appBar: {
@@ -71,7 +72,15 @@ class Checkout extends React.Component {
             todisplay: [],
         };
     }
-
+    componentDidUpdate(prevProps) {
+        const { user } = this.props;
+        if (user !== prevProps.user && user) {
+            this.getOrders();
+            this.setState({
+                email: user.email,
+            });
+        }
+    }
     handleNext = () => {
         this.setState((state) => ({
             activeStep: state.activeStep + 1,
@@ -102,11 +111,19 @@ class Checkout extends React.Component {
         }
     };
 
-    handleScreenShot = (data) => {
+    handleScreenShot(dataUri) {
+        const data = new FormData();
+        data.append('file', dataUri);
+        axios.post('/api/rekognition/todo', data).then((response) => {
+            console.log(response);
+            //this.handlePostOrder(data)
+        });
+    }
+    handlePostOrder = (data) => {
         axios.post('/api/order/postOrder', data).then((response) => {
-            console.log('added to cart');
+            console.log('added to cart', response);
             axios.post('/api/order/getOrder', data).then((response) => {
-                console.log(response);
+                console.log(' cart', response);
                 this.setState({
                     todisplay: response.data.items,
                 });
@@ -114,14 +131,20 @@ class Checkout extends React.Component {
         });
     };
 
-    fetchOrders = (data) => {};
+    fetchOrders = (data) => {
+        if (this.props.user) {
+            axios.get('/api/order/getOrder', data).then((response) => {
+                console.log(response);
+            });
+        }
+    };
 
     getStepContent = (step) => {
         switch (step) {
             case 0:
                 return <List items={[]} />;
             case 1:
-                return <Camera onTakePhoto={this.handleScreenShot(this.state)} />;
+                return <Camera onTakePhoto={this.handleScreenShot} />;
             case 2:
                 return <List items={this.state.todisplay} />;
             default:
@@ -190,22 +213,31 @@ class Checkout extends React.Component {
 }
 
 Checkout.propTypes = {
+    user: PropTypes.object,
+
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Checkout);
+const mapStateToProps = (state) => {
+    return {
+        user: state.user,
+    };
+};
+const CheckoutWithConnected = connect(
+    mapStateToProps,
+    null
+)(Checkout);
 
-function stubData(data) {
-    axios.get('/api/order/getOrder', data).then((response) => {
-        console.log(response);
-    });
-    return [
-        { Name: 'Plant', Confidence: 99.71910858154297 },
-        { Name: 'Vegetable', Confidence: 98.99150085449219 },
-        { Name: 'Food', Confidence: 98.99150085449219 },
-        { Name: 'Broccoli', Confidence: 98.99150085449219 },
-        { Name: 'Banana', Confidence: 97.18341064453125 },
-        { Name: 'Fruit', Confidence: 97.18341064453125 },
-        { Name: 'Carrot', Confidence: 72.56779479980469 },
-    ];
-}
+export default withStyles(styles)(CheckoutWithConnected);
+
+// function stubData(data) {
+//     return [
+//         { Name: 'Plant', Confidence: 99.71910858154297 },
+//         { Name: 'Vegetable', Confidence: 98.99150085449219 },
+//         { Name: 'Food', Confidence: 98.99150085449219 },
+//         { Name: 'Broccoli', Confidence: 98.99150085449219 },
+//         { Name: 'Banana', Confidence: 97.18341064453125 },
+//         { Name: 'Fruit', Confidence: 97.18341064453125 },
+//         { Name: 'Carrot', Confidence: 72.56779479980469 },
+//     ];
+// }
