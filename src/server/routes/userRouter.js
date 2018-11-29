@@ -2,44 +2,53 @@ import express from 'express';
 import mongoClient from '../util/mongoClient';
 
 const router = express.Router();
-const client = mongoClient.get();
 
 router.get('/', (req, res) => {
-    const db = client.getDB();
-    const query = {};
-    const user = db
-        .collection('users')
-        .findOne(query)
-        .toArray();
+    const email = req.query ? req.query.email : '';
+    if (!email) {
+        return res.send({ error: 'missing email' });
+    }
+    mongoClient.getDB((err, client, db) => {
+        const query = { email };
+        db.collection('users').findOne(query, (err, result) => {
+            if (err) return res.send({ error: err });
+            res.status(201).json(result);
+        });
 
-    res.status(201).json({
-        data: user ? user[0] : null,
+        client.close();
     });
 });
-
 router.post('/', (req, res) => {
-    const db = client.getDB();
-    const query = {};
-    db.collection('users').findOneAndUpdate(
-        query,
-        { $push: { items: { $each: req.body.items } } },
-        (err) => {
-            console.log('Updating');
-            console.log(req.body.items);
-            if (err) {
-                console.log(err);
-                res.status(401).json({
-                    status: 'false',
-                });
-            } else {
-                console.log('works');
-                res.status(201).json({
-                    status: 'true',
-                });
-                //console.log("1 document updated");
-            }
-        }
-    );
+    const query = req.body || {};
+    if (query.email) {
+        mongoClient.getDB((err, client, db) => {
+            console.log('query', req);
+            db.collection('users').insertOne(query, (err, result) => {
+                if (err) return res.send({ error: err });
+                res.status(201).json(result);
+            });
+
+            client.close();
+        });
+    }
+    res.status(201).json({
+        data: null,
+    });
+});
+router.put('/', (req, res) => {
+    const { email } = req.body;
+    if (!email) {
+        return res.send({ error: 'missing email' });
+    }
+    mongoClient.getDB((err, client, db) => {
+        const query = { email };
+        db.collection('users').findOneAndUpdate(query, { $set: req.body }, (err) => {
+            if (err) return res.send({ error: err });
+            res.status(201).json(req.body);
+        });
+
+        client.close();
+    });
 });
 
 export default router;

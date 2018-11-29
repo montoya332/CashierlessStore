@@ -10,6 +10,7 @@ import serverRender from './render';
 import paths from '../../config/paths';
 import rekognitionRouter from './routes/rekognition';
 import orderRouter from './routes/orderRouter';
+import userRouter from './routes/userRouter';
 import cookieParser from 'cookie-parser';
 
 require('dotenv').config();
@@ -37,6 +38,9 @@ app.use((req, res, next) => {
     req.store = configureStore({ initialState });
     return next();
 });
+app.use('/api/rekognition', rekognitionRouter);
+app.use('/api/order', orderRouter);
+app.use('/api/users', userRouter);
 
 const manifestPath = path.join(paths.clientBuild, paths.publicPath);
 
@@ -45,9 +49,6 @@ app.use(
         manifestPath: `${manifestPath}/manifest.json`,
     })
 );
-
-app.use('/api/rekognition', rekognitionRouter);
-app.use('/api/order', orderRouter);
 
 app.use(serverRender());
 
