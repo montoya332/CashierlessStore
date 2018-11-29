@@ -4,7 +4,7 @@ const url = 'mongodb://admin:admin12345@ds145981.mlab.com:45981/shopez';
 //TODO: return Promise
 class Client {
     constructor() {
-        this.connect();
+        // this.connect();
     }
     connect(done) {
         return MongoClient.connect(

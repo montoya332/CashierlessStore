@@ -1,18 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
-import LockIcon from '@material-ui/icons/LockOutlined';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { connect } from 'react-redux';
-// import axios from 'axios/index';
+import axios from 'axios/index';
 
 const styles = (theme) => ({
     layout: {
@@ -48,12 +46,28 @@ const styles = (theme) => ({
 });
 
 class Account extends React.Component {
-    handleSubmit = () => {
+    constructor(props) {
+        super(props);
+        this.state = {};
+    }
+    handleSubmit = (e) => {
+        e.preventDefault();
+        const data = this.state;
+        console.log(this.state);
+        axios.put('/api/users', data).then(({ data }) => {
+            if (data && data.userId) {
+                //this.props.signInUser(data);
+            }
+        });
         return false;
     };
+    handleChange = (e) => {
+        const { value, name } = e.target;
+        name && this.setState({ [name]: value });
+    };
     render() {
-        const { classes } = this.props;
-        if (!this.props.user) {
+        const { classes, user } = this.props;
+        if (!user) {
             return <LinearProgress color="secondary" />;
         }
         return (
@@ -61,18 +75,16 @@ class Account extends React.Component {
                 <CssBaseline />
                 <div className={classes.layout}>
                     <Paper className={classes.paper}>
-                        <Avatar className={classes.avatar}>
-                            <LockIcon />
-                        </Avatar>
-                        <Typography variant="headline">Sign in</Typography>
+                        <Typography variant="headline">Account Info: </Typography>
                         <form className={classes.form} onSubmit={this.handleSubmit}>
                             <FormControl margin="normal" required fullWidth>
                                 <InputLabel htmlFor="first_name">First Name</InputLabel>
                                 <Input
                                     id="first_name"
                                     name="first_name"
-                                    autoComplete="first_name"
                                     autoFocus
+                                    onChange={this.handleChange}
+                                    value={user.first_name}
                                 />
                             </FormControl>
                             <FormControl margin="normal" required fullWidth>
@@ -80,8 +92,9 @@ class Account extends React.Component {
                                 <Input
                                     id="last_name"
                                     name="last_name"
-                                    autoComplete="last_name"
                                     autoFocus
+                                    onChange={this.handleChange}
+                                    value={user.last_name}
                                 />
                             </FormControl>
                             <FormControl margin="normal" required fullWidth>
@@ -89,14 +102,21 @@ class Account extends React.Component {
                                 <Input
                                     id="email"
                                     name="email"
-                                    autoComplete="email"
                                     type="email"
                                     autoFocus
+                                    onChange={this.handleChange}
+                                    value={user.email}
                                 />
                             </FormControl>
                             <FormControl margin="normal" required fullWidth>
                                 <InputLabel htmlFor="card_details">Card Details</InputLabel>
-                                <Input name="card_details" type="password" id="card_details" />
+                                <Input
+                                    name="card_details"
+                                    type="password"
+                                    id="card_details"
+                                    onChange={this.handleChange}
+                                    value={user.card_details}
+                                />
                             </FormControl>
 
                             <Button

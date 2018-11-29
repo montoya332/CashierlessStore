@@ -4,7 +4,7 @@ import multer from 'multer';
 import mongoClient from '../util/mongoClient';
 const fs = require('fs-extra');
 const AWS = require('aws-sdk');
-
+export const EMAILCOOKIE = 'userEmail';
 let config = {
     accessKeyId: '',
     secretAccessKey: '',
@@ -29,7 +29,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 router.get('/signout', (req, res) => {
-    res.cookie('userId', '', { maxAge: 900000 }).send({ userId: '' });
+    res.cookie(EMAILCOOKIE, '', { maxAge: 900000 }).send({ userId: '' });
 });
 router.get('/refresh', (req, res) => {
     const deleteCollection = req.query ? req.query.deleteCollection : '';
@@ -39,19 +39,19 @@ router.get('/refresh', (req, res) => {
     if (deleteCollection) {
         rekognition.deleteCollection(params, () => {
             rekognition.createCollection(params);
-            res.cookie('userId', '', { maxAge: 900000 }).send({ userId: '' });
+            res.cookie(EMAILCOOKIE, '', { maxAge: 900000 }).send({ userId: '' });
         });
     } else {
         rekognition.createCollection(params, () => {
             rekognition.createCollection(params);
-            res.cookie('userId', '', { maxAge: 900000 }).send({ userId: '' });
+            res.cookie(EMAILCOOKIE, '', { maxAge: 900000 }).send({ userId: '' });
         });
     }
 });
 router.post('/searchFacesByImage', upload.single('file'), (req, res) => {
     const callback = (err, data) => {
         if (err) {
-            res.cookie('userId', '', { maxAge: 900000 }).send(err);
+            res.cookie(EMAILCOOKIE, '', { maxAge: 900000 }).send(err);
         } else {
             if (data.FaceMatches && data.FaceMatches.length > 0 && data.FaceMatches[0].Face) {
                 const face = data.FaceMatches[0].Face;
@@ -60,7 +60,7 @@ router.post('/searchFacesByImage', upload.single('file'), (req, res) => {
                     const query = { userId: face.ExternalImageId };
                     db.collection('users').findOne(query, (err, result) => {
                         if (err || !result) return res.send({ error: err });
-                        res.cookie('userId', face.ExternalImageId, { maxAge: 900000 }).send({
+                        res.cookie(EMAILCOOKIE, result.email, { maxAge: 900000 }).send({
                             ...face,
                             img: getImageUrl(face.ExternalImageId),
                             userId: face.ExternalImageId,
@@ -71,7 +71,7 @@ router.post('/searchFacesByImage', upload.single('file'), (req, res) => {
                     client.close();
                 });
             } else {
-                res.cookie('userId', '', { maxAge: 900000 }).send({ error: 'Not recognized' });
+                res.cookie(EMAILCOOKIE, '', { maxAge: 900000 }).send({ error: 'Not recognized' });
             }
         }
     };
@@ -115,12 +115,16 @@ router.post('/signup', upload.single('file'), (req, res) => {
                                     if (err) {
                                         res.send({ err: err });
                                     }
-                                    res.status(201).json({ email, userId, faceId: userId });
+                                    res.cookie(EMAILCOOKIE, email, { maxAge: 900000 })
+                                        .status(201)
+                                        .json({ email, userId, faceId: userId });
                                 }
                             );
                         } else {
                             client.close();
-                            res.status(201).json(result);
+                            res.cookie(EMAILCOOKIE, result.email, { maxAge: 900000 })
+                                .status(201)
+                                .json(result);
                         }
                     });
                 });
