@@ -5,7 +5,9 @@ User:
 img
 first_name
 last_name
-card_details
+card_num
+exp_date
+cvv
 email
 
  */

@@ -22,7 +22,6 @@ router.post('/', (req, res) => {
     const query = req.body || {};
     if (query.email) {
         mongoClient.getDB((err, client, db) => {
-            console.log('query', req);
             db.collection('users').insertOne(query, (err, result) => {
                 if (err) return res.send({ error: err });
                 res.status(201).json(result);
