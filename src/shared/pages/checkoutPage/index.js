@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import List from '../../components/list';
 import Camera from '../../components/camera';
 import css from '../../App.module.css';
+import axios from 'axios/index';
 
 const styles = (theme) => ({
     appBar: {
@@ -57,6 +58,17 @@ class Checkout extends React.Component {
         this.state = {
             activeStep: 0,
             orderItems: [],
+            email: 'harsh@xyz.com',
+            items: [
+                { Name: 'Plant', Confidence: 99.71910858154297 },
+                { Name: 'Vegetable', Confidence: 98.99150085449219 },
+                { Name: 'Food', Confidence: 98.99150085449219 },
+                { Name: 'Broccoli', Confidence: 98.99150085449219 },
+                { Name: 'Banana', Confidence: 97.18341064453125 },
+                { Name: 'Fruit', Confidence: 97.18341064453125 },
+                { Name: 'Carrot', Confidence: 72.56779479980469 },
+            ],
+            todisplay: [],
         };
     }
 
@@ -89,14 +101,29 @@ class Checkout extends React.Component {
             this.handleNext();
         }
     };
+
+    handleScreenShot = (data) => {
+        axios.post('/api/order/postOrder', data).then((response) => {
+            console.log('added to cart');
+            axios.post('/api/order/getOrder', data).then((response) => {
+                console.log(response);
+                this.setState({
+                    todisplay: response.data.items,
+                });
+            });
+        });
+    };
+
+    fetchOrders = (data) => {};
+
     getStepContent = (step) => {
         switch (step) {
             case 0:
                 return <List items={[]} />;
             case 1:
-                return <Camera />;
+                return <Camera onTakePhoto={this.handleScreenShot(this.state)} />;
             case 2:
-                return <List items={stubData()} />;
+                return <List items={this.state.todisplay} />;
             default:
                 throw new Error('Unknown step');
         }
@@ -168,7 +195,10 @@ Checkout.propTypes = {
 
 export default withStyles(styles)(Checkout);
 
-function stubData() {
+function stubData(data) {
+    axios.get('/api/order/getOrder', data).then((response) => {
+        console.log(response);
+    });
     return [
         { Name: 'Plant', Confidence: 99.71910858154297 },
         { Name: 'Vegetable', Confidence: 98.99150085449219 },

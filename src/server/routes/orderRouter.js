@@ -5,7 +5,7 @@ const assert = require('assert');
 
 const url = 'mongodb://admin:admin12345@ds145981.mlab.com:45981/shopez';
 
-router.get('/getOrder', (req, res) => {
+router.post('/getOrder', (req, res) => {
     MongoClient.connect(
         url,
         (err, client) => {
