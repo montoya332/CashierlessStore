@@ -59,7 +59,6 @@ class Checkout extends React.Component {
         this.state = {
             activeStep: 0,
             orderItems: [],
-            email: 'harsh@xyz.com',
             items: [
                 { Name: 'Plant', Confidence: 99.71910858154297 },
                 { Name: 'Vegetable', Confidence: 98.99150085449219 },
@@ -71,15 +70,6 @@ class Checkout extends React.Component {
             ],
             todisplay: [],
         };
-    }
-    componentDidUpdate(prevProps) {
-        const { user } = this.props;
-        if (user !== prevProps.user && user) {
-            this.getOrders();
-            this.setState({
-                email: user.email,
-            });
-        }
     }
     handleNext = () => {
         this.setState((state) => ({
@@ -99,7 +89,7 @@ class Checkout extends React.Component {
         });
     };
     handleUserDetails = (r) => {
-        console.log(r);
+        console.log(r, this.props.user.email); // TODO: User Email
         this.handleNext();
     };
     handleCartDetails = (r) => {
