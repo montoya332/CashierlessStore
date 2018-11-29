@@ -1,8 +1,10 @@
 // baseUrl = '/api/rekognition'
 import { Router } from 'express';
 import multer from 'multer';
+import mongoClient from '../util/mongoClient';
 const fs = require('fs-extra');
 const AWS = require('aws-sdk');
+export const EMAILCOOKIE = 'userEmail';
 let config = {
     accessKeyId: '',
     secretAccessKey: '',
@@ -27,22 +29,49 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 router.get('/signout', (req, res) => {
-    res.cookie('userId', '', { maxAge: 900000 }).send({ userId: '' });
+    res.cookie(EMAILCOOKIE, '', { maxAge: 900000 }).send({ userId: '' });
+});
+router.get('/refresh', (req, res) => {
+    const deleteCollection = req.query ? req.query.deleteCollection : '';
+    const params = {
+        CollectionId: config.collectionName,
+    };
+    if (deleteCollection) {
+        rekognition.deleteCollection(params, () => {
+            rekognition.createCollection(params);
+            res.cookie(EMAILCOOKIE, '', { maxAge: 900000 }).send({ userId: '' });
+        });
+    } else {
+        rekognition.createCollection(params, () => {
+            rekognition.createCollection(params);
+            res.cookie(EMAILCOOKIE, '', { maxAge: 900000 }).send({ userId: '' });
+        });
+    }
 });
 router.post('/searchFacesByImage', upload.single('file'), (req, res) => {
     const callback = (err, data) => {
         if (err) {
-            res.cookie('userId', '', { maxAge: 900000 }).send(err);
+            res.cookie(EMAILCOOKIE, '', { maxAge: 900000 }).send(err);
         } else {
             if (data.FaceMatches && data.FaceMatches.length > 0 && data.FaceMatches[0].Face) {
                 const face = data.FaceMatches[0].Face;
-                res.cookie('userId', face.ExternalImageId, { maxAge: 900000 }).send({
-                    ...face,
-                    img: getImageUrl(face.ExternalImageId),
-                    userId: face.ExternalImageId,
+
+                mongoClient.getDB((err, client, db) => {
+                    const query = { userId: face.ExternalImageId };
+                    db.collection('users').findOne(query, (err, result) => {
+                        if (err || !result) return res.send({ error: err });
+                        res.cookie(EMAILCOOKIE, result.email, { maxAge: 900000 }).send({
+                            ...face,
+                            img: getImageUrl(face.ExternalImageId),
+                            userId: face.ExternalImageId,
+                            ...result,
+                        });
+                    });
+
+                    client.close();
                 });
             } else {
-                res.cookie('userId', '', { maxAge: 900000 }).send({ error: 'Not recognized' });
+                res.cookie(EMAILCOOKIE, '', { maxAge: 900000 }).send({ error: 'Not recognized' });
             }
         }
     };
@@ -76,11 +105,34 @@ router.post('/signup', upload.single('file'), (req, res) => {
             const userId = email.replace(/[^a-zA-Z0-9 ]/g, '');
             indexFace({ bitmap, email, userId }, (err) => {
                 err && res.status(200).json({ err: 'Looks like you have an account already' });
-                res.status(200).json({ email, userId: email });
+                mongoClient.getDB((err, client, db) => {
+                    db.collection('users').findOne({ userId }, (err, result) => {
+                        if (err || !result) {
+                            db.collection('users').insertOne(
+                                { email, userId, faceId: userId },
+                                (err) => {
+                                    client.close();
+                                    if (err) {
+                                        res.send({ err: err });
+                                    }
+                                    res.cookie(EMAILCOOKIE, email, { maxAge: 900000 })
+                                        .status(201)
+                                        .json({ email, userId, faceId: userId });
+                                }
+                            );
+                        } else {
+                            client.close();
+                            res.cookie(EMAILCOOKIE, result.email, { maxAge: 900000 })
+                                .status(201)
+                                .json(result);
+                        }
+                    });
+                });
             });
         });
     }
 });
+
 router.post('/detectLabels', upload.single('file'), (req, res) => {
     const file = req.file;
     const meta = req.body;
