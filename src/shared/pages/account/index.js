@@ -7,6 +7,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import LockIcon from '@material-ui/icons/LockOutlined';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
@@ -48,11 +49,13 @@ const styles = (theme) => ({
 
 class Account extends React.Component {
     handleSubmit = () => {
-        return this.props.user;
+        return false;
     };
     render() {
         const { classes } = this.props;
-
+        if (!this.props.user) {
+            return <LinearProgress color="secondary" />;
+        }
         return (
             <React.Fragment>
                 <CssBaseline />
