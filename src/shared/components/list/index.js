@@ -6,10 +6,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 
 const MappedList = (props) => (
     <List>
-
         {props.items &&
             props.items.map((item, key) => {
-
                 return (
                     <ListItem key={key}>
                         <ListItemText primary={item.Name || ''} />
