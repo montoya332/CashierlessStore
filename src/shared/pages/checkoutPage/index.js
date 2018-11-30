@@ -11,7 +11,6 @@ import Typography from '@material-ui/core/Typography';
 import List from '../../components/list';
 import Camera from '../../components/camera';
 import css from '../../App.module.css';
-import axios from 'axios/index';
 
 const styles = (theme) => ({
     appBar: {
@@ -58,53 +57,13 @@ class Checkout extends React.Component {
         this.state = {
             activeStep: 0,
             orderItems: [],
-            items: [
-                { Name: 'Plant', Confidence: 99.71910858154297 },
-                { Name: 'Vegetable', Confidence: 98.99150085449219 },
-                { Name: 'Food', Confidence: 98.99150085449219 },
-                { Name: 'Broccoli', Confidence: 98.99150085449219 },
-                { Name: 'Banana', Confidence: 97.18341064453125 },
-                { Name: 'Fruit', Confidence: 97.18341064453125 },
-                { Name: 'Carrot', Confidence: 72.56779479980469 },
-            ],
-            todisplay: [],
         };
     }
-<<<<<<< HEAD
 
-    handleNext = (data) => {
-        if(this.state.activeStep == 1){
-            axios.post('/api/order/getOrder', data).then((response) => {
-                console.log(response);
-                this.setState({
-                    todisplay: response.data.items,
-                });
-            });
-            this.setState((state) => ({
-                activeStep: state.activeStep + 1,
-            }));
-
-        }
-        else if(this.state.activeStep == 2){
-            axios.post('/api/order/updateActive', data).then((response) => {
-                console.log(response);
-            });
-            this.setState((state) => ({
-                activeStep: state.activeStep + 1,
-            }));
-        }
-        else
-        {
-            this.setState((state) => ({
-                activeStep: state.activeStep + 1,
-            }));
-        }
-=======
     handleNext = () => {
         this.setState((state) => ({
             activeStep: state.activeStep + 1,
         }));
->>>>>>> 461434303ed58aa42123f4aaca510ac076835b0f
     };
 
     handleBack = () => {
@@ -119,7 +78,7 @@ class Checkout extends React.Component {
         });
     };
     handleUserDetails = (r) => {
-        console.log(r, this.props.user.email); // TODO: User Email
+        console.log(r);
         this.handleNext();
     };
     handleCartDetails = (r) => {
@@ -130,36 +89,14 @@ class Checkout extends React.Component {
             this.handleNext();
         }
     };
-
-    handleScreenShot(dataUri) {
-        const data = new FormData();
-        data.append('file', dataUri);
-        axios.post('/api/rekognition/detectLabels', data).then((response) => {
-            console.log(response);
-            this.setState({
-                items: response.data.items
-            })
-            //this.handlePostOrder(data)
-        });
-    }
-
-    handlePostOrder = (data) => {
-        axios.post('/api/order/postOrder', data).then((response) => {
-            console.log('added to cart');
-
-        });
-    };
-
-    fetchOrders = (data) => {};
-
     getStepContent = (step) => {
         switch (step) {
             case 0:
                 return <List items={[]} />;
             case 1:
-                return <Camera onTakePhoto={this.handleScreenShot} />;
+                return <Camera />;
             case 2:
-                return <List items={this.state.todisplay} />;
+                return <List items={stubData()} />;
             default:
                 throw new Error('Unknown step');
         }
@@ -210,7 +147,7 @@ class Checkout extends React.Component {
                                     <Button
                                         variant="contained"
                                         color="primary"
-                                        onClick={() => this.handleNext(this.state)}
+                                        onClick={this.handleNext}
                                         className={classes.button}
                                     >
                                         {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
@@ -231,10 +168,7 @@ Checkout.propTypes = {
 
 export default withStyles(styles)(Checkout);
 
-function stubData(data) {
-    axios.get('/api/order/getOrder', data).then((response) => {
-        console.log(response);
-    });
+function stubData() {
     return [
         { Name: 'Plant', Confidence: 99.71910858154297 },
         { Name: 'Vegetable', Confidence: 98.99150085449219 },
