@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { connect } from 'react-redux';
 import axios from 'axios/index';
+import { signInUser } from '../../store/app/actions';
 
 const styles = (theme) => ({
     layout: {
@@ -51,13 +52,13 @@ class Account extends React.Component {
         this.state = {};
     }
     handleSubmit = (e) => {
-        const { user } = this.props;
+        const { user, signInUser } = this.props;
 
         e.preventDefault();
         const data = { email: user.email, ...this.state };
         axios.put('/api/users', data).then(({ data }) => {
-            if (data && data.userId) {
-                //this.props.signInUser(data);
+            if (!data.err) {
+                signInUser && signInUser({ ...user, ...data });
             }
         });
         return false;
@@ -68,6 +69,7 @@ class Account extends React.Component {
     };
     render() {
         const { classes, user } = this.props;
+        const { state } = this;
         if (!user) {
             return <LinearProgress color="secondary" />;
         }
@@ -85,7 +87,7 @@ class Account extends React.Component {
                                     name="first_name"
                                     autoFocus
                                     onChange={this.handleChange}
-                                    value={user.first_name}
+                                    value={state.first_name || user.first_name}
                                 />
                             </FormControl>
                             <FormControl margin="normal" required fullWidth>
@@ -95,7 +97,7 @@ class Account extends React.Component {
                                     name="last_name"
                                     autoFocus
                                     onChange={this.handleChange}
-                                    value={user.last_name}
+                                    value={state.last_name || user.last_name}
                                 />
                             </FormControl>
                             <FormControl margin="normal" required fullWidth>
@@ -106,7 +108,7 @@ class Account extends React.Component {
                                     type="email"
                                     autoFocus
                                     onChange={this.handleChange}
-                                    value={user.email}
+                                    value={state.email || user.email}
                                 />
                             </FormControl>
                             <FormControl margin="normal" required fullWidth>
@@ -116,7 +118,7 @@ class Account extends React.Component {
                                     type="password"
                                     id="card_details"
                                     onChange={this.handleChange}
-                                    value={user.card_details}
+                                    value={state.card_details || user.card_details}
                                 />
                             </FormControl>
 
@@ -140,6 +142,7 @@ class Account extends React.Component {
 Account.propTypes = {
     user: PropTypes.object,
     classes: PropTypes.object.isRequired,
+    signInUser: PropTypes.func,
 };
 
 const mapStateToProps = (state) => {
@@ -147,10 +150,11 @@ const mapStateToProps = (state) => {
         user: state.user,
     };
 };
+const mapDispatchToProps = { signInUser };
 
 const AccountWithStyles = withStyles(styles)(Account);
 
 export default connect(
     mapStateToProps,
-    null
+    mapDispatchToProps
 )(AccountWithStyles);
