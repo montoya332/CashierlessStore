@@ -125,7 +125,7 @@ class Checkout extends React.Component {
     handleScreenShot(dataUri) {
         const data = new FormData();
         data.append('file', dataUri);
-        axios.post('/api/rekognition/todo', data).then((response) => {
+        axios.post('/api/rekognition/detectLabels', data).then((response) => {
             console.log(response);
             this.setState({
                 items: response.data.items,
@@ -149,7 +149,7 @@ class Checkout extends React.Component {
             case 0:
                 return <List items={[]} />;
             case 1:
-                return <Camera onTakePhoto={this.handlePostOrder(this.state)} />;
+                return <Camera onTakePhoto={this.handleScreenShot} />;
             case 2:
                 return <List items={this.state.todisplay} />;
             default:

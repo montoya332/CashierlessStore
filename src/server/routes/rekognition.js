@@ -172,7 +172,7 @@ router.get('/getObject', (req, res) => {
     });
 });
 function detectLabels(bitmap, callback = () => {}) {
-    rekognition.searchFacesByImage(
+    rekognition.detectLabels(
         {
             Image: {
                 Bytes: bitmap,
