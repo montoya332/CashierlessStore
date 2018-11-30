@@ -1,6 +1,7 @@
 import React from 'react';
 import { Line } from 'react-chartjs-2';
 import Styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 const Div = Styled.div`
     height: 450px;
@@ -21,5 +22,7 @@ const budget = (props) => {
         </Div>
     );
 };
-
+budget.propTypes = {
+    chartData: PropTypes.object,
+};
 export default budget;

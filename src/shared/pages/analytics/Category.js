@@ -1,6 +1,7 @@
 import React from 'react';
 import { HorizontalBar } from 'react-chartjs-2';
 import Styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 const Div = Styled.div`
     height: 420px;
@@ -21,5 +22,7 @@ const category = (props) => {
         </Div>
     );
 };
-
+category.propTypes = {
+    chartData: PropTypes.object,
+};
 export default category;

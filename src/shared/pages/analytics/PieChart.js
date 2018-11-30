@@ -1,6 +1,7 @@
 import React from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import Styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 const Div = Styled.div`
     height: 350px;
@@ -21,5 +22,7 @@ const pieChart = (props) => {
         </Div>
     );
 };
-
+pieChart.propTypes = {
+    chartData: PropTypes.object,
+};
 export default pieChart;
