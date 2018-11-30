@@ -64,20 +64,22 @@ class Checkout extends React.Component {
         };
     }
 
-    handleNext = (d) => {
-        const data = d || this.state;
-        if (this.state.activeStep === 1) {
+    handleNext = (e) => {
+        const { activeStep } = this.state;
+        console.log('handleNext: ', activeStep, e);
+        if (activeStep === 1) {
             axios.post('/api/order/getOrder', { email: this.props.user.email }).then((response) => {
-                console.log(response);
                 this.setState({
-                    activeStep: this.state.activeStep + 1,
+                    activeStep: activeStep + 1,
                     todisplay: response.data.items,
                 });
             });
-        } else if (this.state.activeStep === 2) {
-            axios.post('/api/order/updateActive', data).then((response) => {
-                console.log(response);
-            });
+        } else if (activeStep === 2) {
+            axios
+                .post('/api/order/updateActive', { email: this.props.user.email })
+                .then((response) => {
+                    console.log(response);
+                });
             this.setState((state) => ({
                 activeStep: state.activeStep + 1,
             }));
@@ -170,6 +172,27 @@ class Checkout extends React.Component {
                             </Step>
                         ))}
                     </Stepper>
+
+                    <React.Fragment>
+                        {activeStep === 0 ? (
+                            <React.Fragment>
+                                <Typography variant="h5" gutterBottom>
+                                    Hi, {this.props.user.email}
+                                </Typography>
+                                <Typography variant="subtitle1">
+                                    You can start scanning your items now.. Click on Next to place
+                                    your order..
+                                </Typography>
+                            </React.Fragment>
+                        ) : (
+                            <React.Fragment>
+                                <Typography variant="h5" gutterBottom>
+                                    Hi, {this.props.user.email}
+                                </Typography>
+                            </React.Fragment>
+                        )}
+                    </React.Fragment>
+
                     <React.Fragment>
                         {activeStep === steps.length ? (
                             <React.Fragment>

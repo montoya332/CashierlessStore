@@ -4,7 +4,9 @@ const router = express.Router();
 const assert = require('assert');
 
 const url = 'mongodb://admin:admin12345@ds145981.mlab.com:45981/shopez';
-
+const price = {
+    Banana: 10,
+};
 router.post('/getOrder', (req, res) => {
     MongoClient.connect(
         url,
@@ -22,8 +24,13 @@ router.post('/getOrder', (req, res) => {
                 .find(query)
                 .toArray((err, result) => {
                     if (err) throw err;
+                    const items = result[0].items.map((item) => {
+                        return { ...item, price: price[item.Name] };
+                    });
+
+                    const fItems = items.filter((item) => item.price);
                     res.status(201).json({
-                        items: result[0].items,
+                        items: fItems,
                     });
                 });
 
