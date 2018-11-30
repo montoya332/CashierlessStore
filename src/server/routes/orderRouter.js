@@ -4,7 +4,10 @@ const router = express.Router();
 const assert = require('assert');
 
 const url = 'mongodb://admin:admin12345@ds145981.mlab.com:45981/shopez';
-
+const price = {
+    "Apple": 5 ,
+    "iPhone": 120
+}
 router.post('/getOrder', (req, res) => {
     MongoClient.connect(
         url,
@@ -32,7 +35,32 @@ router.post('/getOrder', (req, res) => {
     );
 });
 
-router.post('/postOrder', (req, res) => {
+router.post('/getUser', (req, res) => {
+    MongoClient.connect(
+        url,
+        (err, client) => {
+            assert.equal(null, err);
+            console.log('Connected successfully to server');
+
+            const db = client.db('shopez');
+            const query = {
+                email: req.body.email,
+
+            };
+
+            db.collection('users')
+                .find(query)
+                .toArray((err, result) => {
+                    if (err) throw err;
+                    res.status(201).json({
+                        user: result[0].email,
+                    });
+                });
+
+            client.close();
+        }
+    );
+});router.post('/postOrder', (req, res) => {
     console.log(req);
 
     MongoClient.connect(

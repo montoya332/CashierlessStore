@@ -139,6 +139,7 @@ class Checkout extends React.Component {
         console.log(data);
     };
 
+
     getStepContent = (step) => {
         switch (step) {
             case 0:
@@ -157,6 +158,7 @@ class Checkout extends React.Component {
         const { activeStep } = this.state;
 
         return (
+
             <React.Fragment>
                 <CssBaseline />
                 <Paper className={classes.paper + ' ' + css.muiIconWrapper}>
@@ -170,6 +172,27 @@ class Checkout extends React.Component {
                             </Step>
                         ))}
                     </Stepper>
+
+                    <React.Fragment>
+                        {activeStep === 0 ? (
+                            <React.Fragment>
+                                <Typography variant="h5" gutterBottom>
+                                    Hi, {this.props.user.email}
+                                </Typography>
+                                <Typography variant="subtitle1">
+                                    You can start scanning your items now.. Click on Next to place your order..
+                                </Typography>
+                            </React.Fragment>
+                        ):(
+                            <React.Fragment>
+                                <Typography variant="h5" gutterBottom>
+                                    Hi, {this.props.user.email}
+                                </Typography>
+                            </React.Fragment>
+
+                            )}
+                    </React.Fragment>
+
                     <React.Fragment>
                         {activeStep === steps.length ? (
                             <React.Fragment>

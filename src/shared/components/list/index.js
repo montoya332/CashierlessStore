@@ -6,6 +6,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 
 const MappedList = (props) => (
     <List>
+
         {props.items &&
             props.items.map((item, key) => {
                 let price;
