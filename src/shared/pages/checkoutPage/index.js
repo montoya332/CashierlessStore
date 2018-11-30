@@ -67,7 +67,7 @@ class Checkout extends React.Component {
     handleNext = (d) => {
         const data = d || this.state;
         if (this.state.activeStep === 1) {
-            axios.post('/api/order/getOrder', {"email": this.props.user.email}).then((response) => {
+            axios.post('/api/order/getOrder', { email: this.props.user.email }).then((response) => {
                 console.log(response);
                 this.setState({
                     activeStep: this.state.activeStep + 1,
