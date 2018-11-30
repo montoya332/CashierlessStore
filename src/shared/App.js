@@ -5,7 +5,7 @@ import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { withNamespaces } from 'react-i18next';
 import { setLocale, signOutUser } from './store/app/actions';
-import Analytics from './pages/analytics';
+import Analytics from './pages/analytics/Graph';
 import Checkout from './pages/checkoutPage';
 import Dashboard from './pages/dashboard';
 import Products from './pages/products';
