@@ -122,20 +122,24 @@ class Checkout extends React.Component {
         }
     };
 
-    handleScreenShot(dataUri) {
+    handleScreenShot = (dataUri) => {
         const data = new FormData();
         data.append('file', dataUri);
-        axios.post('/api/rekognition/detectLabels', data).then((response) => {
-            console.log(response);
-            this.setState({
-                items: response.data.items,
-            });
-            //this.handlePostOrder(data)
+        axios.post('/api/rekognition/detectLabels', data).then(({ data }) => {
+            this.setState(
+                {
+                    items: data.Labels,
+                },
+                () => {
+                    this.handlePostOrder();
+                }
+            );
         });
-    }
+    };
 
-    handlePostOrder = (data) => {
-        axios.post('/api/order/postOrder', data).then((response) => {
+    handlePostOrder = () => {
+        const { items } = this.state;
+        axios.post('/api/order/postOrder', items).then((response) => {
             console.log('added to cart', response);
         });
     };
