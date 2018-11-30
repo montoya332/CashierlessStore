@@ -75,7 +75,7 @@ class Checkout extends React.Component {
                 });
             });
         } else if (this.state.activeStep === 2) {
-            axios.post('/api/order/updateActive', data).then((response) => {
+            axios.post('/api/order/updateActive', {"email": this.props.user.email}).then((response) => {
                 console.log(response);
             });
             this.setState((state) => ({
