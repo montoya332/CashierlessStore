@@ -141,7 +141,6 @@ router.post('/getPrice', (req, res) => {
     );
 });
 
-
 router.post('/updateActive', (req, res) => {
     MongoClient.connect(
         url,
@@ -154,13 +153,16 @@ router.post('/updateActive', (req, res) => {
                 email: req.body.email,
                 active: 'yes',
             };
-            var newvalues = { $set: {active: "no" } };
-            db.collection("orders").updateOne(query, newvalues, function(err, res) {
+            const newvalues = { $set: { active: 'no' } };
+            db.collection('orders').updateOne(query, newvalues, (err, result) => {
                 if (err) throw err;
-                console.log("1 document updated");
+                console.log('1 document updated', result);
+                res.status(201).json({
+                    status: 'true',
+                    result,
+                });
                 client.close();
             });
-
         }
     );
 });

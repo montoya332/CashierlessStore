@@ -72,8 +72,9 @@ class Checkout extends React.Component {
         };
     }
 
-    handleNext = (data) => {
-        if(this.state.activeStep == 1){
+    handleNext = (d) => {
+        const data = d || this.state;
+        if (this.state.activeStep === 1) {
             axios.post('/api/order/getOrder', data).then((response) => {
                 console.log(response);
                 this.setState({
@@ -83,18 +84,14 @@ class Checkout extends React.Component {
             this.setState((state) => ({
                 activeStep: state.activeStep + 1,
             }));
-
-        }
-        else if(this.state.activeStep == 2){
+        } else if (this.state.activeStep === 2) {
             axios.post('/api/order/updateActive', data).then((response) => {
                 console.log(response);
             });
             this.setState((state) => ({
                 activeStep: state.activeStep + 1,
             }));
-        }
-        else
-        {
+        } else {
             this.setState((state) => ({
                 activeStep: state.activeStep + 1,
             }));
@@ -131,20 +128,21 @@ class Checkout extends React.Component {
         axios.post('/api/rekognition/todo', data).then((response) => {
             console.log(response);
             this.setState({
-                items: response.data.items
-            })
+                items: response.data.items,
+            });
             //this.handlePostOrder(data)
         });
     }
 
     handlePostOrder = (data) => {
         axios.post('/api/order/postOrder', data).then((response) => {
-            console.log('added to cart');
-
+            console.log('added to cart', response);
         });
     };
 
-    fetchOrders = (data) => {};
+    fetchOrders = (data) => {
+        console.log(data);
+    };
 
     getStepContent = (step) => {
         switch (step) {
@@ -204,7 +202,7 @@ class Checkout extends React.Component {
                                     <Button
                                         variant="contained"
                                         color="primary"
-                                        onClick={() => this.handleNext(this.state)}
+                                        onClick={this.handleNext}
                                         className={classes.button}
                                     >
                                         {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
@@ -225,17 +223,17 @@ Checkout.propTypes = {
 
 export default withStyles(styles)(Checkout);
 
-function stubData(data) {
-    axios.get('/api/order/getOrder', data).then((response) => {
-        console.log(response);
-    });
-    return [
-        { Name: 'Plant', Confidence: 99.71910858154297 },
-        { Name: 'Vegetable', Confidence: 98.99150085449219 },
-        { Name: 'Food', Confidence: 98.99150085449219 },
-        { Name: 'Broccoli', Confidence: 98.99150085449219 },
-        { Name: 'Banana', Confidence: 97.18341064453125 },
-        { Name: 'Fruit', Confidence: 97.18341064453125 },
-        { Name: 'Carrot', Confidence: 72.56779479980469 },
-    ];
-}
+// function stubData(data) {
+//     axios.get('/api/order/getOrder', data).then((response) => {
+//         console.log(response);
+//     });
+//     return [
+//         { Name: 'Plant', Confidence: 99.71910858154297 },
+//         { Name: 'Vegetable', Confidence: 98.99150085449219 },
+//         { Name: 'Food', Confidence: 98.99150085449219 },
+//         { Name: 'Broccoli', Confidence: 98.99150085449219 },
+//         { Name: 'Banana', Confidence: 97.18341064453125 },
+//         { Name: 'Fruit', Confidence: 97.18341064453125 },
+//         { Name: 'Carrot', Confidence: 72.56779479980469 },
+//     ];
+// }
