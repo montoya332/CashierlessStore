@@ -137,20 +137,30 @@ router.post('/detectLabels', upload.single('file'), (req, res) => {
     const file = req.file;
     const meta = req.body;
     console.log(meta);
-    const bitmap = fs.readFileSync(file.path);
-    const params = {
-        Image: {
-            Bytes: bitmap,
-        },
-        MaxLabels: 123,
-        MinConfidence: 70,
-    };
-    rekognition.detectLabels(params, (err, data) => {
-        if (err) {
-            res.status(500).json(err);
-        }
-        res.status(200).json(data);
-    });
+    let bitmap;
+    if (file) {
+        bitmap = fs.readFileSync(file.path);
+        detectLabels(bitmap, (err, data) => {
+            if (err) {
+                res.status(500).json(err);
+            }
+            res.status(200).json(data);
+        });
+    } else {
+        let base64Data = req.body.file.replace(/^data:image\/png;base64,/, '');
+        base64Data = base64Data.replace(/^data:image\/jpeg;base64,/, '');
+        const filePath = './uploads/detectLabels-' + new Date().getTime() + '.png';
+        fs.writeFile(filePath, base64Data, 'base64', (err) => {
+            if (err) return res.send({ error: err });
+            bitmap = fs.readFileSync(filePath);
+            detectLabels(bitmap, (err, data) => {
+                if (err) {
+                    res.status(500).json(err);
+                }
+                res.status(200).json(data);
+            });
+        });
+    }
 });
 router.get('/getObject', (req, res) => {
     const file = 'arturo_montoya.jpg'; //TODO: req.file
@@ -161,6 +171,18 @@ router.get('/getObject', (req, res) => {
         res.send(data);
     });
 });
+function detectLabels(bitmap, callback = () => {}) {
+    rekognition.detectLabels(
+        {
+            Image: {
+                Bytes: bitmap,
+            },
+            MaxLabels: 123,
+            MinConfidence: 70,
+        },
+        callback
+    );
+}
 function searchFacesByImage(bitmap, callback = () => {}) {
     rekognition.searchFacesByImage(
         {

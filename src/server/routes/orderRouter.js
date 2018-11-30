@@ -5,7 +5,7 @@ const assert = require('assert');
 
 const url = 'mongodb://admin:admin12345@ds145981.mlab.com:45981/shopez';
 
-router.get('/getOrder', (req, res) => {
+router.post('/getOrder', (req, res) => {
     MongoClient.connect(
         url,
         (err, client) => {
@@ -115,7 +115,7 @@ router.post('/postOrder', (req, res) => {
     );
 });
 
-router.get('/getPrice', (req, res) => {
+router.post('/getPrice', (req, res) => {
     MongoClient.connect(
         url,
         (err, client) => {
@@ -137,6 +137,32 @@ router.get('/getPrice', (req, res) => {
                 });
 
             client.close();
+        }
+    );
+});
+
+router.post('/updateActive', (req, res) => {
+    MongoClient.connect(
+        url,
+        (err, client) => {
+            assert.equal(null, err);
+            console.log('Connected successfully to server');
+
+            const db = client.db('shopez');
+            const query = {
+                email: req.body.email,
+                active: 'yes',
+            };
+            const newvalues = { $set: { active: 'no' } };
+            db.collection('orders').updateOne(query, newvalues, (err, result) => {
+                if (err) throw err;
+                console.log('1 document updated', result);
+                res.status(201).json({
+                    status: 'true',
+                    result,
+                });
+                client.close();
+            });
         }
     );
 });

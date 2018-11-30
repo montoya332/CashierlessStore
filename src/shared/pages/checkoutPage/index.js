@@ -11,6 +11,8 @@ import Typography from '@material-ui/core/Typography';
 import List from '../../components/list';
 import Camera from '../../components/camera';
 import css from '../../App.module.css';
+import axios from 'axios/index';
+import { connect } from 'react-redux';
 
 const styles = (theme) => ({
     appBar: {
@@ -57,13 +59,33 @@ class Checkout extends React.Component {
         this.state = {
             activeStep: 0,
             orderItems: [],
+            items: [],
+            todisplay: [],
         };
     }
 
-    handleNext = () => {
-        this.setState((state) => ({
-            activeStep: state.activeStep + 1,
-        }));
+    handleNext = (d) => {
+        const data = d || this.state;
+        if (this.state.activeStep === 1) {
+            axios.post('/api/order/getOrder', data).then((response) => {
+                console.log(response);
+                this.setState({
+                    activeStep: this.state.activeStep + 1,
+                    todisplay: response.data.items,
+                });
+            });
+        } else if (this.state.activeStep === 2) {
+            axios.post('/api/order/updateActive', data).then((response) => {
+                console.log(response);
+            });
+            this.setState((state) => ({
+                activeStep: state.activeStep + 1,
+            }));
+        } else {
+            this.setState((state) => ({
+                activeStep: state.activeStep + 1,
+            }));
+        }
     };
 
     handleBack = () => {
@@ -89,14 +111,42 @@ class Checkout extends React.Component {
             this.handleNext();
         }
     };
+
+    handleScreenShot = (dataUri) => {
+        const data = new FormData();
+        data.append('file', dataUri);
+        axios.post('/api/rekognition/detectLabels', data).then(({ data }) => {
+            this.setState(
+                {
+                    items: data.Labels,
+                },
+                () => {
+                    this.handlePostOrder();
+                }
+            );
+        });
+    };
+
+    handlePostOrder = () => {
+        const { items } = this.state;
+        const { email } = this.props.user;
+        axios.post('/api/order/postOrder', { items, email }).then((response) => {
+            console.log('added to cart', response);
+        });
+    };
+
+    fetchOrders = (data) => {
+        console.log(data);
+    };
+
     getStepContent = (step) => {
         switch (step) {
             case 0:
                 return <List items={[]} />;
             case 1:
-                return <Camera />;
+                return <Camera onTakePhoto={this.handleScreenShot} />;
             case 2:
-                return <List items={stubData()} />;
+                return <List items={this.state.todisplay} />;
             default:
                 throw new Error('Unknown step');
         }
@@ -163,19 +213,35 @@ class Checkout extends React.Component {
 }
 
 Checkout.propTypes = {
+    user: PropTypes.object,
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Checkout);
+const mapStateToProps = (state) => {
+    return {
+        user: state.user,
+    };
+};
+const mapDispatchToProps = {};
 
-function stubData() {
-    return [
-        { Name: 'Plant', Confidence: 99.71910858154297 },
-        { Name: 'Vegetable', Confidence: 98.99150085449219 },
-        { Name: 'Food', Confidence: 98.99150085449219 },
-        { Name: 'Broccoli', Confidence: 98.99150085449219 },
-        { Name: 'Banana', Confidence: 97.18341064453125 },
-        { Name: 'Fruit', Confidence: 97.18341064453125 },
-        { Name: 'Carrot', Confidence: 72.56779479980469 },
-    ];
-}
+const CheckoutWithStyles = withStyles(styles)(Checkout);
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(CheckoutWithStyles);
+
+// function stubData(data) {
+//     axios.get('/api/order/getOrder', data).then((response) => {
+//         console.log(response);
+//     });
+//     return [
+//         { Name: 'Plant', Confidence: 99.71910858154297 },
+//         { Name: 'Vegetable', Confidence: 98.99150085449219 },
+//         { Name: 'Food', Confidence: 98.99150085449219 },
+//         { Name: 'Broccoli', Confidence: 98.99150085449219 },
+//         { Name: 'Banana', Confidence: 97.18341064453125 },
+//         { Name: 'Fruit', Confidence: 97.18341064453125 },
+//         { Name: 'Carrot', Confidence: 72.56779479980469 },
+//     ];
+// }
