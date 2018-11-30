@@ -9,7 +9,6 @@ import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import List from '../../components/list';
-import List2 from '../../components/list/List2';
 import Camera from '../../components/camera';
 import css from '../../App.module.css';
 import axios from 'axios/index';
@@ -74,7 +73,7 @@ class Checkout extends React.Component {
     }
 
     handleNext = (data) => {
-        if (this.state.activeStep == 1) {
+        if(this.state.activeStep == 1){
             axios.post('/api/order/getOrder', data).then((response) => {
                 console.log(response);
                 this.setState({
@@ -84,7 +83,18 @@ class Checkout extends React.Component {
             this.setState((state) => ({
                 activeStep: state.activeStep + 1,
             }));
-        } else {
+
+        }
+        else if(this.state.activeStep == 2){
+            axios.post('/api/order/updateActive', data).then((response) => {
+                console.log(response);
+            });
+            this.setState((state) => ({
+                activeStep: state.activeStep + 1,
+            }));
+        }
+        else
+        {
             this.setState((state) => ({
                 activeStep: state.activeStep + 1,
             }));
@@ -115,9 +125,22 @@ class Checkout extends React.Component {
         }
     };
 
-    handleScreenShot = (data) => {
+    handleScreenShot(dataUri) {
+        const data = new FormData();
+        data.append('file', dataUri);
+        axios.post('/api/rekognition/detectLabels', data).then((response) => {
+            console.log(response);
+            this.setState({
+                items: response.data.items
+            })
+            //this.handlePostOrder(data)
+        });
+    }
+
+    handlePostOrder = (data) => {
         axios.post('/api/order/postOrder', data).then((response) => {
             console.log('added to cart');
+
         });
     };
 
@@ -128,7 +151,7 @@ class Checkout extends React.Component {
             case 0:
                 return <List items={[]} />;
             case 1:
-                return <Camera onTakePhoto={() => this.handleScreenShot(this.state)} />;
+                return <Camera onTakePhoto={this.handleScreenShot} />;
             case 2:
                 return <List items={this.state.todisplay} />;
             default:

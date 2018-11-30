@@ -141,4 +141,28 @@ router.post('/getPrice', (req, res) => {
     );
 });
 
+
+router.post('/updateActive', (req, res) => {
+    MongoClient.connect(
+        url,
+        (err, client) => {
+            assert.equal(null, err);
+            console.log('Connected successfully to server');
+
+            const db = client.db('shopez');
+            const query = {
+                email: req.body.email,
+                active: 'yes',
+            };
+            var newvalues = { $set: {active: "no" } };
+            db.collection("orders").updateOne(query, newvalues, function(err, res) {
+                if (err) throw err;
+                console.log("1 document updated");
+                client.close();
+            });
+
+        }
+    );
+});
+
 export default router;
