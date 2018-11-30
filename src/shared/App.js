@@ -9,6 +9,7 @@ import Analytics from './pages/analytics';
 import Checkout from './pages/checkoutPage';
 import Dashboard from './pages/dashboard';
 import Products from './pages/products';
+import Account from './pages/account';
 import Signin from './pages/signin';
 import Signup from './pages/signup';
 // import Home from './pages/home';
@@ -43,7 +44,7 @@ class App extends React.PureComponent<PropsT> {
                     <Route path="/order" component={Checkout} />
                     <Route path="/orderhistory" component={Orderhistory} />
                     <Route path="/products" component={Products} />
-                    <Route path="/account" component={Analytics} />
+                    <Route path="/account" component={Account} />
                     <Route path="/404" component={Page404} />
                     <Route component={Checkout} />
                 </Switch>

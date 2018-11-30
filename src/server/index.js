@@ -8,8 +8,9 @@ import bodyParser from 'body-parser';
 import { configureStore } from '../shared/store';
 import serverRender from './render';
 import paths from '../../config/paths';
-import rekognitionRouter from './routes/rekognition';
+import rekognitionRouter, { EMAILCOOKIE } from './routes/rekognition';
 import orderRouter from './routes/orderRouter';
+import userRouter, { getUser } from './routes/userRouter';
 import cookieParser from 'cookie-parser';
 
 require('dotenv').config();
@@ -32,11 +33,24 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 app.use((req, res, next) => {
-    const { userId } = req.cookies;
-    const initialState = userId ? { user: { userId } } : {};
-    req.store = configureStore({ initialState });
-    return next();
+    let initialState = {};
+    const userCookie = req.cookies[EMAILCOOKIE];
+    if (userCookie) {
+        getUser(userCookie, (err, result) => {
+            if (!err) {
+                initialState = { user: result };
+            }
+            req.store = configureStore({ initialState });
+            return next();
+        });
+    } else {
+        req.store = configureStore({ initialState });
+        return next();
+    }
 });
+app.use('/api/rekognition', rekognitionRouter);
+app.use('/api/order', orderRouter);
+app.use('/api/users', userRouter);
 
 const manifestPath = path.join(paths.clientBuild, paths.publicPath);
 
@@ -45,9 +59,6 @@ app.use(
         manifestPath: `${manifestPath}/manifest.json`,
     })
 );
-
-app.use('/api/rekognition', rekognitionRouter);
-app.use('/api/order', orderRouter);
 
 app.use(serverRender());
 

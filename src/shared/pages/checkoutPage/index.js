@@ -58,7 +58,6 @@ class Checkout extends React.Component {
         this.state = {
             activeStep: 0,
             orderItems: [],
-            email: 'harsh@xyz.com',
             items: [
                 { Name: 'Plant', Confidence: 99.71910858154297 },
                 { Name: 'Vegetable', Confidence: 98.99150085449219 },
@@ -71,6 +70,7 @@ class Checkout extends React.Component {
             todisplay: [],
         };
     }
+<<<<<<< HEAD
 
     handleNext = (data) => {
         if(this.state.activeStep == 1){
@@ -99,6 +99,12 @@ class Checkout extends React.Component {
                 activeStep: state.activeStep + 1,
             }));
         }
+=======
+    handleNext = () => {
+        this.setState((state) => ({
+            activeStep: state.activeStep + 1,
+        }));
+>>>>>>> 461434303ed58aa42123f4aaca510ac076835b0f
     };
 
     handleBack = () => {
@@ -113,7 +119,7 @@ class Checkout extends React.Component {
         });
     };
     handleUserDetails = (r) => {
-        console.log(r);
+        console.log(r, this.props.user.email); // TODO: User Email
         this.handleNext();
     };
     handleCartDetails = (r) => {
