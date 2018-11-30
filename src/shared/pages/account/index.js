@@ -147,9 +147,10 @@ const mapStateToProps = (state) => {
         user: state.user,
     };
 };
-const AccountWithConnected = connect(
+
+const AccountWithStyles = withStyles(styles)(Account);
+
+export default connect(
     mapStateToProps,
     null
-)(Account);
-
-export default withStyles(styles)(AccountWithConnected);
+)(AccountWithStyles);
