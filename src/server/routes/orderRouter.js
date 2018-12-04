@@ -8,6 +8,8 @@ const products = {
     Banana: 1.1,
     Apple: 1.25,
     Orange: 1.05,
+    Human: 150,
+    Plant: 20,
 };
 router.get('/products', (req, res) => {
     res.status(201).json({
