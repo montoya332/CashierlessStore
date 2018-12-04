@@ -42,11 +42,13 @@ class App extends React.PureComponent<PropsT> {
     };
 
     componentDidMount() {
-        axios.post('/api/order/getOrderHistory', { email: 'harsh@xyz.com' }).then((response) => {
-            this.setState({
-                todisplay: response.data.items,
+        axios
+            .post('/api/order/getOrderHistory', { email: this.props.user.email })
+            .then((response) => {
+                this.setState({
+                    todisplay: response.data.items,
+                });
             });
-        });
     }
 
     renderRoutes() {
