@@ -41,6 +41,7 @@ router.post('/getOrder', (req, res) => {
     );
 });
 
+
 router.post('/postOrder', (req, res) => {
     console.log(req);
 
@@ -124,31 +125,8 @@ router.post('/postOrder', (req, res) => {
     );
 });
 
-router.post('/getPrice', (req, res) => {
-    MongoClient.connect(
-        url,
-        (err, client) => {
-            assert.equal(null, err);
-            console.log('Connected successfully to server');
 
-            const db = client.db('shopez');
-            const query = {
-                pname: req.body.pname,
-            };
 
-            db.collection('items')
-                .find(query)
-                .toArray((err, result) => {
-                    if (err) throw err;
-                    res.status(201).json({
-                        price: result[0].price,
-                    });
-                });
-
-            client.close();
-        }
-    );
-});
 
 router.post('/updateActive', (req, res) => {
     MongoClient.connect(
@@ -175,5 +153,88 @@ router.post('/updateActive', (req, res) => {
         }
     );
 });
+
+
+router.post('/getUserCard', (req, res) => {
+    MongoClient.connect(
+        url,
+        (err, client) => {
+            assert.equal(null, err);
+            console.log('Connected successfully to server');
+
+            const db = client.db('shopez');
+            const query = {
+                email: req.body.email
+            };
+
+            db.collection('users')
+                .find(query)
+                .toArray((err, result) => {
+                    console.log(result[0].card_details)
+                    if (err) throw err;
+                    if(result[0].card_details == undefined) {
+                        res.status(201).json({
+                            status: false
+                        });
+                    }
+                    else{
+                        res.status(201).json({
+                            status: true
+                        });
+                    }
+                });
+
+            client.close();
+        }
+    );
+});
+
+router.post('/confirmClick', (req, res) => {
+    console.log(req);
+
+    MongoClient.connect(
+        url,
+        (err, client) => {
+            assert.equal(null, err);
+            console.log(err);
+            console.log('Connected successfully to server');
+
+            const query = {
+                email: req.body.email,
+                active: 'yes',
+            };
+
+            const query1 = {
+                email: req.body.email,
+                active: 'yes',
+                items: [],
+            };
+            const db = client.db('shopez');
+
+            //Again and again
+            db.collection('orders').findOne(query, (err, user) => {
+                console.log('USER');
+                console.log(user);
+                console.log(err);
+
+                if (!user) {
+                    res.status(201).json({
+                        status: false
+                    });
+                    client.close();
+                } else {
+                    res.status(201).json({
+                        status: true
+                    });
+                    client.close();
+                }
+            });
+        }
+    );
+});
+
+
+
+
 
 export default router;

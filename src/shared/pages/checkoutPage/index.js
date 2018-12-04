@@ -61,6 +61,8 @@ class Checkout extends React.Component {
             orderItems: [],
             items: [],
             todisplay: [],
+            errmsg: '',
+            errmsg1: ''
         };
     }
 
@@ -68,21 +70,52 @@ class Checkout extends React.Component {
         const { activeStep } = this.state;
         console.log('handleNext: ', activeStep, e);
         if (activeStep === 1) {
-            axios.post('/api/order/getOrder', { email: this.props.user.email }).then((response) => {
-                this.setState({
-                    activeStep: activeStep + 1,
-                    todisplay: response.data.items,
-                });
-            });
+            axios.post('/api/order/confirmClick', { email: this.props.user.email})
+                .then((response)=> {
+                    console.log(response.data.status);
+                    if (response.data.status == false) {
+                        console.log("in");
+                        this.setState((state) => ({
+                            errmsg1: 'You need to atleast scan one item before placing any order!!',
+                        }));
+                        console.log(this.state.errmsg);
+                    }
+                    else if (response.data.status == true) {
+                        axios.post('/api/order/getOrder', {email: this.props.user.email}).then((response) => {
+                            this.setState({
+                                activeStep: activeStep + 1,
+                                todisplay: response.data.items,
+                            });
+                        });
+
+                    }
+                })
         } else if (activeStep === 2) {
-            axios
-                .post('/api/order/updateActive', { email: this.props.user.email })
-                .then((response) => {
-                    console.log(response);
-                });
-            this.setState((state) => ({
-                activeStep: state.activeStep + 1,
-            }));
+
+            axios.post('/api/order/getUserCard', { email: this.props.user.email})
+                .then((response)=> {
+                    console.log(response.data.status);
+                    if(response.data.status == false){
+                        console.log("in");
+                        this.setState((state) => ({
+                            errmsg: 'Please Enter your card detail before confirming order!!'
+
+                        }));
+                        console.log(this.state.errmsg);
+                    }
+                    else if(response.data.status == true){
+                        axios
+                            .post('/api/order/updateActive', { email: this.props.user.email })
+                            .then((response) => {
+                                console.log(response);
+                            });
+                        this.setState((state) => ({
+                            activeStep: state.activeStep + 1,
+                        }));
+                    }
+
+                })
+
         } else {
             this.setState((state) => ({
                 activeStep: state.activeStep + 1,
@@ -192,6 +225,23 @@ class Checkout extends React.Component {
                             </React.Fragment>
                         )}
                     </React.Fragment>
+
+                    <React.Fragment>
+                        {activeStep === 1 ? (
+                            <React.Fragment>
+                                <Typography variant="h5" gutterBottom style={{ color: 'red'}}>
+                                    {this.state.errmsg1}
+                                </Typography>
+                            </React.Fragment>
+                        ) : (
+                            <React.Fragment>
+                                <Typography variant="h5" gutterBottom style={{ color: 'red'}}>
+                                    {this.state.errmsg}
+                                </Typography>
+                            </React.Fragment>
+                        )}
+                    </React.Fragment>
+
 
                     <React.Fragment>
                         {activeStep === steps.length ? (
