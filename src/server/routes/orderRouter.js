@@ -5,8 +5,10 @@ const assert = require('assert');
 
 const url = 'mongodb://admin:admin12345@ds145981.mlab.com:45981/shopez';
 const price = {
-    Banana: 10,
-};
+    "Banana": 10,
+    "Human": 150
+}
+
 router.post('/getOrder', (req, res) => {
     MongoClient.connect(
         url,
