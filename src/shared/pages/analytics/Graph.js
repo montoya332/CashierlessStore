@@ -1,15 +1,15 @@
 import React from 'react';
 import Pie from './PieChart';
 import Budget from './Budget';
-import Styled from 'styled-components';
 import Category from './Category';
-
-const Div = Styled.div`
-        
-`;
+import axios from 'axios/index';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 class Chart extends React.Component {
     state = {
+        products: null,
+        items: null,
         budgetData: {
             labels: [
                 'January',
@@ -119,16 +119,47 @@ class Chart extends React.Component {
             ],
         },
     };
-
+    componentDidMount() {
+        const { user } = this.props;
+        console.log('User: ', user);
+        axios.post('/api/order/getOrder', { email: user.email }).then(({ data }) => {
+            this.setState({
+                products: data.products,
+                items: data.items,
+            });
+        });
+    }
     render() {
+        const { items, products } = this.state;
+        console.log('render: ', { items, products });
+
+        if (!items) {
+            return <p>Loading</p>;
+        } else if (!items.length) {
+            return <p>No Items Purchased</p>;
+        }
+
         return (
-            <Div>
+            <div>
                 <Category chartData={this.state.categorydata} />
                 <Budget chartData={this.state.budgetData} />
                 <Pie chartData={this.state.chartData} />
-            </Div>
+            </div>
         );
     }
 }
+const mapStateToProps = (state) => {
+    return {
+        user: state.user,
+    };
+};
+const mapDispatchToProps = {};
 
-export default Chart;
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Chart);
+
+Chart.propTypes = {
+    user: PropTypes.object,
+};
