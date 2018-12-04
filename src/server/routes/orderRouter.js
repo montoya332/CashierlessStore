@@ -11,6 +11,11 @@ const products = {
     Human: 150,
     Plant: 20,
 };
+router.get('/products', (req, res) => {
+    res.status(201).json({
+        products,
+    });
+});
 
 router.post('/getOrder', (req, res) => {
     MongoClient.connect(
@@ -36,6 +41,7 @@ router.post('/getOrder', (req, res) => {
                     const fItems = items.filter((item) => item.price);
                     res.status(201).json({
                         items: fItems,
+                        products,
                     });
                 });
 
