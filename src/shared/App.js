@@ -13,7 +13,7 @@ import Account from './pages/account';
 import Signin from './pages/signin';
 import Signup from './pages/signup';
 // import Home from './pages/home';
-import Orderhistory from './pages/orderhistory';
+//import Orderhistory from './pages/orderhistory'; TODO: not sure if it should be used
 
 import css from './App.module.css';
 import { Switch, Route } from 'react-router';
@@ -32,15 +32,6 @@ class App extends React.PureComponent<PropsT> {
             todiplay: [],
         };
     }
-    setLanguage = (e: SyntheticEvent<HTMLButtonElement>) => {
-        this.props.setLocale(e.target.value);
-    };
-    handleSignOut = () => {
-        axios.get('/api/rekognition/signout').then(() => {
-            this.props.signOutUser();
-        });
-    };
-
     componentDidMount() {
         axios
             .post('/api/order/getOrderHistory', { email: this.props.user.email })
@@ -50,7 +41,21 @@ class App extends React.PureComponent<PropsT> {
                 });
             });
     }
-
+    setLanguage = (e: SyntheticEvent<HTMLButtonElement>) => {
+        this.props.setLocale(e.target.value);
+    };
+    handleSignOut = () => {
+        axios.get('/api/rekognition/signout').then(() => {
+            this.props.signOutUser();
+        });
+    };
+    renderOrderHistoy() {
+        return (
+            <div>
+                <List items={this.state.todisplay} />
+            </div>
+        );
+    }
     renderRoutes() {
         const { user } = this.props;
         if (user.userId) {
@@ -59,15 +64,7 @@ class App extends React.PureComponent<PropsT> {
                 <Switch>
                     <Route path="/analytics" component={Analytics} />
                     <Route path="/order" component={Checkout} />
-                    <Route
-                        exact
-                        path="/orderhistory"
-                        render={() => (
-                            <div>
-                                <List items={this.state.todisplay} />
-                            </div>
-                        )}
-                    />
+                    <Route exact path="/orderhistory" render={this.renderOrderHistoy()} />
                     <Route path="/products" component={Products} />
                     <Route path="/account" component={Account} />
                     <Route path="/404" component={Page404} />

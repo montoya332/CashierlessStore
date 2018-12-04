@@ -74,13 +74,13 @@ class Checkout extends React.Component {
                 .post('/api/order/confirmClick', { email: this.props.user.email })
                 .then((response) => {
                     console.log(response.data.status);
-                    if (response.data.status == false) {
+                    if (response.data.status === false) {
                         console.log('in');
-                        this.setState((state) => ({
+                        this.setState(() => ({
                             errmsg1: 'You need to atleast scan one item before placing any order!!',
                         }));
                         console.log(this.state.errmsg);
-                    } else if (response.data.status == true) {
+                    } else if (response.data.status === true) {
                         axios
                             .post('/api/order/getOrder', { email: this.props.user.email })
                             .then((response) => {
@@ -96,13 +96,13 @@ class Checkout extends React.Component {
                 .post('/api/order/getUserCard', { email: this.props.user.email })
                 .then((response) => {
                     console.log(response.data.status);
-                    if (response.data.status == false) {
+                    if (response.data.status === false) {
                         console.log('in');
-                        this.setState((state) => ({
+                        this.setState(() => ({
                             errmsg: 'Please Enter your card detail before confirming order!!',
                         }));
                         console.log(this.state.errmsg);
-                    } else if (response.data.status == true) {
+                    } else if (response.data.status === true) {
                         axios
                             .post('/api/order/updateActive', { email: this.props.user.email })
                             .then((response) => {

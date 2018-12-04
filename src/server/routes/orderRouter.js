@@ -4,8 +4,10 @@ const router = express.Router();
 const assert = require('assert');
 
 const url = 'mongodb://admin:admin12345@ds145981.mlab.com:45981/shopez';
-const price = {
-    Banana: 10,
+const products = {
+    Banana: 1.1,
+    Apple: 1.25,
+    Orange: 1.05,
     Human: 150,
     Plant: 20,
 };
@@ -28,7 +30,7 @@ router.post('/getOrder', (req, res) => {
                 .toArray((err, result) => {
                     if (err) throw err;
                     const items = result[0].items.map((item) => {
-                        return { ...item, price: price[item.Name] };
+                        return { ...item, price: products[item.Name] };
                     });
 
                     const fItems = items.filter((item) => item.price);
@@ -168,7 +170,7 @@ router.post('/getUserCard', (req, res) => {
                 .toArray((err, result) => {
                     console.log(result[0].card_details);
                     if (err) throw err;
-                    if (result[0].card_details == undefined) {
+                    if (result[0].card_details === undefined) {
                         res.status(201).json({
                             status: false,
                         });
@@ -199,11 +201,6 @@ router.post('/confirmClick', (req, res) => {
                 active: 'yes',
             };
 
-            const query1 = {
-                email: req.body.email,
-                active: 'yes',
-                items: [],
-            };
             const db = client.db('shopez');
 
             //Again and again
@@ -245,7 +242,7 @@ router.post('/getOrderHistory', (req, res) => {
                 .toArray((err, result) => {
                     if (err) throw err;
                     const items = result[0].items.map((item) => {
-                        return { ...item, price: price[item.Name] };
+                        return { ...item, price: products[item.Name] };
                     });
 
                     const fItems = items.filter((item) => item.price);
