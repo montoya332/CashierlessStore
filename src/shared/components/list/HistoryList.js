@@ -8,17 +8,15 @@ const MappedList = (props) => (
     <List>
         <h2>Purchase History</h2>
         {props.items &&
-        props.items.map((item, key) => {
-            return (
+            props.items.map((item, key) => {
+                return (
+                    <ListItem key={key}>
+                        <ListItemText primary={item.Name || ''} />
 
-                <ListItem key={key}>
-
-                    <ListItemText primary={item.Name || ''} />
-
-                    <p>{item.price}</p>
-                </ListItem>
-            );
-        })}
+                        <p>{item.price}</p>
+                    </ListItem>
+                );
+            })}
     </List>
 );
 

@@ -26,11 +26,11 @@ type PropsT = {
 
 const Page404 = () => <h1>404</h1>;
 class App extends React.PureComponent<PropsT> {
-    constructor(props){
+    constructor(props) {
         super(props);
-        this.state={
-            todiplay: []
-        }
+        this.state = {
+            todiplay: [],
+        };
     }
     setLanguage = (e: SyntheticEvent<HTMLButtonElement>) => {
         this.props.setLocale(e.target.value);
@@ -41,13 +41,12 @@ class App extends React.PureComponent<PropsT> {
         });
     };
 
-    componentDidMount(){
-        axios.post('/api/order/getOrderHistory', {email: "harsh@xyz.com"}).then((response) => {
+    componentDidMount() {
+        axios.post('/api/order/getOrderHistory', { email: 'harsh@xyz.com' }).then((response) => {
             this.setState({
-                todisplay: response.data.items
+                todisplay: response.data.items,
             });
         });
-
     }
 
     renderRoutes() {
@@ -58,11 +57,15 @@ class App extends React.PureComponent<PropsT> {
                 <Switch>
                     <Route path="/analytics" component={Analytics} />
                     <Route path="/order" component={Checkout} />
-                    <Route exact path="/orderhistory" render={() => (
-                        <div>
-                            <List items={this.state.todisplay} />
-                        </div>
-                    )}/>
+                    <Route
+                        exact
+                        path="/orderhistory"
+                        render={() => (
+                            <div>
+                                <List items={this.state.todisplay} />
+                            </div>
+                        )}
+                    />
                     <Route path="/products" component={Products} />
                     <Route path="/account" component={Account} />
                     <Route path="/404" component={Page404} />
