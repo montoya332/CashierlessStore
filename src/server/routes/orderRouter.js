@@ -6,7 +6,8 @@ const assert = require('assert');
 const url = 'mongodb://admin:admin12345@ds145981.mlab.com:45981/shopez';
 const price = {
     "Banana": 10,
-    "Human": 150
+    "Human": 150,
+    "Plant": 20
 }
 
 router.post('/getOrder', (req, res) => {
@@ -229,6 +230,37 @@ router.post('/confirmClick', (req, res) => {
                     client.close();
                 }
             });
+        }
+    );
+});
+
+router.post('/getOrderHistory', (req, res) => {
+    MongoClient.connect(
+        url,
+        (err, client) => {
+            assert.equal(null, err);
+            console.log('Connected successfully to server');
+
+            const db = client.db('shopez');
+            const query = {
+                email: req.body.email,
+            };
+
+            db.collection('orders')
+                .find(query)
+                .toArray((err, result) => {
+                    if (err) throw err;
+                    const items = result[0].items.map((item) => {
+                        return { ...item, price: price[item.Name] };
+                    });
+
+                    const fItems = items.filter((item) => item.price);
+                    res.status(201).json({
+                        items: fItems,
+                    });
+                });
+
+            client.close();
         }
     );
 });
