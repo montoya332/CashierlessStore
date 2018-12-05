@@ -33,9 +33,9 @@ class App extends React.PureComponent<PropsT> {
         };
     }
     componentDidMount() {
-        axios
-            .post('/api/order/getOrderHistory', { email: this.props.user.email })
-            .then((response) => {
+        const { user } = this.props;
+        user.email &&
+            axios.post('/api/order/getOrderHistory', { email: user.email }).then((response) => {
                 this.setState({
                     todisplay: response.data.items,
                 });

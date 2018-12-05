@@ -21,10 +21,14 @@ export default class HTML extends React.Component<PropsT> {
         const head = Helmet.renderStatic();
         const { children, scripts, css, state } = this.props;
         return (
-            <html lang="">
+            <html lang="en">
                 <head>
                     <meta charSet="utf-8" />
                     <meta name="viewport" content="width=device-width, initial-scale=1" />
+                    <meta name="description" content="SJSU Project : Cashierless store" />
+                    <meta name="keywords" content="HTML,CSS,JavaScript,SJSU,Cashierless,CMPE280" />
+                    <meta name="author" content="SJSU Team" />
+                    <link rel="manifest" href="/manifest.json" />
                     {head.base.toComponent()}
                     {head.title.toComponent()}
                     {head.meta.toComponent()}

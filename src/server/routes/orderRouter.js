@@ -8,7 +8,6 @@ const products = {
     Banana: 1.1,
     Apple: 1.25,
     Orange: 1.05,
-    Plant: 20,
 };
 const productsArray = Object.keys(products).map((k) => ({ name: k, price: products[k] }));
 router.get('/products', (req, res) => {
