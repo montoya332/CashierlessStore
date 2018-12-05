@@ -13,11 +13,12 @@ import Account from './pages/account';
 import Signin from './pages/signin';
 import Signup from './pages/signup';
 // import Home from './pages/home';
-import Orderhistory from './pages/orderhistory';
+//import Orderhistory from './pages/orderhistory'; TODO: not sure if it should be used
 
 import css from './App.module.css';
 import { Switch, Route } from 'react-router';
 import axios from 'axios';
+import List from './components/list/HistoryList';
 
 type PropsT = {
     setLocale: (string) => {},
@@ -25,6 +26,21 @@ type PropsT = {
 
 const Page404 = () => <h1>404</h1>;
 class App extends React.PureComponent<PropsT> {
+    constructor(props) {
+        super(props);
+        this.state = {
+            todiplay: [],
+        };
+    }
+    componentDidMount() {
+        axios
+            .post('/api/order/getOrderHistory', { email: this.props.user.email })
+            .then((response) => {
+                this.setState({
+                    todisplay: response.data.items,
+                });
+            });
+    }
     setLanguage = (e: SyntheticEvent<HTMLButtonElement>) => {
         this.props.setLocale(e.target.value);
     };
@@ -33,7 +49,13 @@ class App extends React.PureComponent<PropsT> {
             this.props.signOutUser();
         });
     };
-
+    renderOrderHistoy() {
+        return (
+            <div>
+                <List items={this.state.todisplay} />
+            </div>
+        );
+    }
     renderRoutes() {
         const { user } = this.props;
         if (user.userId) {
@@ -42,7 +64,7 @@ class App extends React.PureComponent<PropsT> {
                 <Switch>
                     <Route path="/analytics" component={Analytics} />
                     <Route path="/order" component={Checkout} />
-                    <Route path="/orderhistory" component={Orderhistory} />
+                    <Route exact path="/orderhistory" render={this.renderOrderHistoy()} />
                     <Route path="/products" component={Products} />
                     <Route path="/account" component={Account} />
                     <Route path="/404" component={Page404} />

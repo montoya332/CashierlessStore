@@ -8,12 +8,16 @@ const products = {
     Banana: 1.1,
     Apple: 1.25,
     Orange: 1.05,
+    Human: 150,
+    Plant: 20,
 };
+const productsArray = Object.keys(products).map((k) => ({ name: k, price: products[k] }));
 router.get('/products', (req, res) => {
     res.status(201).json({
-        products: Object.keys(products).map((k) => ({ name: k, price: products[k] })),
+        products: productsArray,
     });
 });
+
 router.post('/getOrder', (req, res) => {
     MongoClient.connect(
         url,
@@ -38,7 +42,7 @@ router.post('/getOrder', (req, res) => {
                     const fItems = items.filter((item) => item.price);
                     res.status(201).json({
                         items: fItems,
-                        products,
+                        products: productsArray,
                     });
                 });
 
@@ -130,32 +134,6 @@ router.post('/postOrder', (req, res) => {
     );
 });
 
-router.post('/getPrice', (req, res) => {
-    MongoClient.connect(
-        url,
-        (err, client) => {
-            assert.equal(null, err);
-            console.log('Connected successfully to server');
-
-            const db = client.db('shopez');
-            const query = {
-                pname: req.body.pname,
-            };
-
-            db.collection('items')
-                .find(query)
-                .toArray((err, result) => {
-                    if (err) throw err;
-                    res.status(201).json({
-                        price: result[0].price,
-                    });
-                });
-
-            client.close();
-        }
-    );
-});
-
 router.post('/updateActive', (req, res) => {
     MongoClient.connect(
         url,
@@ -178,6 +156,110 @@ router.post('/updateActive', (req, res) => {
                 });
                 client.close();
             });
+        }
+    );
+});
+
+router.post('/getUserCard', (req, res) => {
+    MongoClient.connect(
+        url,
+        (err, client) => {
+            assert.equal(null, err);
+            console.log('Connected successfully to server');
+
+            const db = client.db('shopez');
+            const query = {
+                email: req.body.email,
+            };
+
+            db.collection('users')
+                .find(query)
+                .toArray((err, result) => {
+                    console.log(result[0].card_details);
+                    if (err) throw err;
+                    if (result[0].card_details === undefined) {
+                        res.status(201).json({
+                            status: false,
+                        });
+                    } else {
+                        res.status(201).json({
+                            status: true,
+                        });
+                    }
+                });
+
+            client.close();
+        }
+    );
+});
+
+router.post('/confirmClick', (req, res) => {
+    console.log(req);
+
+    MongoClient.connect(
+        url,
+        (err, client) => {
+            assert.equal(null, err);
+            console.log(err);
+            console.log('Connected successfully to server');
+
+            const query = {
+                email: req.body.email,
+                active: 'yes',
+            };
+
+            const db = client.db('shopez');
+
+            //Again and again
+            db.collection('orders').findOne(query, (err, user) => {
+                console.log('USER');
+                console.log(user);
+                console.log(err);
+
+                if (!user) {
+                    res.status(201).json({
+                        status: false,
+                    });
+                    client.close();
+                } else {
+                    res.status(201).json({
+                        status: true,
+                    });
+                    client.close();
+                }
+            });
+        }
+    );
+});
+
+router.post('/getOrderHistory', (req, res) => {
+    MongoClient.connect(
+        url,
+        (err, client) => {
+            assert.equal(null, err);
+            console.log('Connected successfully to server');
+
+            const db = client.db('shopez');
+            const query = {
+                email: req.body.email,
+            };
+
+            db.collection('orders')
+                .find(query)
+                .toArray((err, result) => {
+                    if (err) throw err;
+                    const items = result[0].items.map((item) => {
+                        return { ...item, price: products[item.Name] };
+                    });
+
+                    const fItems = items.filter((item) => item.price);
+                    res.status(201).json({
+                        items: fItems,
+                        products: productsArray,
+                    });
+                });
+
+            client.close();
         }
     );
 });
