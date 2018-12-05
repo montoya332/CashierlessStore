@@ -122,7 +122,7 @@ class Chart extends React.Component {
     componentDidMount() {
         const { user } = this.props;
         console.log('User: ', user);
-        axios.post('/api/order/getOrder', { email: user.email }).then(({ data }) => {
+        axios.post('/api/order/getOrderHistory', { email: user.email }).then(({ data }) => {
             this.setState({
                 products: data.products,
                 items: data.items,
