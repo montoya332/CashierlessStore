@@ -11,9 +11,10 @@ const products = {
     Human: 150,
     Plant: 20,
 };
+const productsArray = Object.keys(products).map((k) => ({ name: k, price: products[k] }));
 router.get('/products', (req, res) => {
     res.status(201).json({
-        products: Object.keys(products).map((k) => ({ name: k, price: products[k] })),
+        products: productsArray,
     });
 });
 
@@ -41,7 +42,7 @@ router.post('/getOrder', (req, res) => {
                     const fItems = items.filter((item) => item.price);
                     res.status(201).json({
                         items: fItems,
-                        products,
+                        products: productsArray,
                     });
                 });
 
@@ -254,6 +255,7 @@ router.post('/getOrderHistory', (req, res) => {
                     const fItems = items.filter((item) => item.price);
                     res.status(201).json({
                         items: fItems,
+                        products: productsArray,
                     });
                 });
 
