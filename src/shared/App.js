@@ -49,13 +49,13 @@ class App extends React.PureComponent<PropsT> {
             this.props.signOutUser();
         });
     };
-    renderOrderHistoy() {
+    renderOrderHistoy = () => {
         return (
             <div>
                 <List items={this.state.todisplay} />
             </div>
         );
-    }
+    };
     renderRoutes() {
         const { user } = this.props;
         if (user.userId) {
@@ -64,7 +64,7 @@ class App extends React.PureComponent<PropsT> {
                 <Switch>
                     <Route path="/analytics" component={Analytics} />
                     <Route path="/order" component={Checkout} />
-                    <Route exact path="/orderhistory" render={this.renderOrderHistoy()} />
+                    <Route exact path="/orderhistory" render={this.renderOrderHistoy} />
                     <Route path="/products" component={Products} />
                     <Route path="/account" component={Account} />
                     <Route path="/404" component={Page404} />
