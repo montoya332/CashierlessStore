@@ -13,7 +13,7 @@ const products = {
 };
 router.get('/products', (req, res) => {
     res.status(201).json({
-        products,
+        products: Object.keys(products).map((k) => ({ name: k, price: products[k] })),
     });
 });
 
