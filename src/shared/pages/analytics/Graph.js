@@ -59,11 +59,11 @@ class Chart extends React.Component {
             ],
         },
         chartData: {
-            labels: ['Apple', 'Banana', 'Tomato', 'Chips', 'Bread'],
+            labels: [],
             datasets: [
                 {
                     label: '# of items purchased',
-                    data: [12, 19, 3, 5, 2],
+                    data: [],
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.2)',
                         'rgba(54, 162, 235, 0.2)',
@@ -131,7 +131,7 @@ class Chart extends React.Component {
                 price.push(data.price);
             });
             chart.labels = labels;
-            chart.datasets.data = price;
+            chart.datasets[0].data = price;
             this.setState({
                 products: data.products,
                 items: data.items,
