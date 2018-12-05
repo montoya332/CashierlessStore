@@ -123,15 +123,25 @@ class Chart extends React.Component {
         const { user } = this.props;
         console.log('User: ', user);
         axios.post('/api/order/getOrderHistory', { email: user.email }).then(({ data }) => {
+            const chart = { ...this.state.chartData };
+            const labels = [];
+            const price = [];
+            data.products.map((data) => {
+                labels.push(data.name);
+                price.push(data.price);
+            });
+            chart.labels = labels;
+            chart.datasets.data = price;
             this.setState({
                 products: data.products,
                 items: data.items,
+                chartData: chart,
             });
         });
     }
     render() {
-        const { items, products } = this.state;
-        console.log('render: ', { items, products });
+        const { items, products, chartData } = this.state;
+        console.log('render: ', { items, products, chartData });
 
         if (!items) {
             return <p>Loading</p>;
