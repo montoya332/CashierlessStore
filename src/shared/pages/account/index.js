@@ -152,9 +152,9 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = { signInUser };
 
-const AccountWithStyles = withStyles(styles)(Account);
-
-export default connect(
+const AccountWithConnected = connect(
     mapStateToProps,
     mapDispatchToProps
-)(AccountWithStyles);
+)(Account);
+
+export default withStyles(styles)(AccountWithConnected);
