@@ -185,7 +185,7 @@ class Checkout extends React.Component {
     };
 
     render() {
-        const { classes } = this.props;
+        const { classes, user } = this.props;
         const { activeStep } = this.state;
 
         return (
@@ -207,7 +207,7 @@ class Checkout extends React.Component {
                         {activeStep === 0 ? (
                             <React.Fragment>
                                 <Typography variant="h5" gutterBottom>
-                                    Hi, {this.props.user.email}
+                                    Hi, {user.email2 || user.email}
                                 </Typography>
                                 <Typography variant="subtitle1">
                                     You can start scanning your items now.. Click on Next to place
@@ -293,24 +293,9 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = {};
 
-const CheckoutWithStyles = withStyles(styles)(Checkout);
-
-export default connect(
+const CheckoutWithConnected = connect(
     mapStateToProps,
     mapDispatchToProps
-)(CheckoutWithStyles);
+)(Checkout);
 
-// function stubData(data) {
-//     axios.get('/api/order/getOrder', data).then((response) => {
-//         console.log(response);
-//     });
-//     return [
-//         { Name: 'Plant', Confidence: 99.71910858154297 },
-//         { Name: 'Vegetable', Confidence: 98.99150085449219 },
-//         { Name: 'Food', Confidence: 98.99150085449219 },
-//         { Name: 'Broccoli', Confidence: 98.99150085449219 },
-//         { Name: 'Banana', Confidence: 97.18341064453125 },
-//         { Name: 'Fruit', Confidence: 97.18341064453125 },
-//         { Name: 'Carrot', Confidence: 72.56779479980469 },
-//     ];
-// }
+export default withStyles(styles)(CheckoutWithConnected);
