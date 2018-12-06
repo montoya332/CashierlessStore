@@ -102,8 +102,9 @@ class Chart extends React.Component {
             budget.datasets[0].data = bdata;
             category.labels = clabels;
             category.datasets[0].data = cprice;
-            chart.labels = labels;
-            chart.datasets[0].data = price;
+            chart.labels = clabels;
+            chart.datasets[0].data = cprice;
+
             this.setState({
                 products: data.products,
                 items: data.items,
@@ -125,7 +126,9 @@ class Chart extends React.Component {
         return (
             <div>
                 <Category chartData={this.state.categorydata} />
+                <br />
                 <Budget chartData={this.state.budgetData} />
+                <br />
                 <Pie chartData={this.state.chartData} />
             </div>
         );
