@@ -5,8 +5,6 @@ import PropTypes from 'prop-types';
 
 const Div = Styled.div`
     height: 450px;
-    width: 90%;
-    margin: 0 10%;
 `;
 
 const H1 = Styled.h1`

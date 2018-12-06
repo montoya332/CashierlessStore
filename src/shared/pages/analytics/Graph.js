@@ -124,7 +124,7 @@ class Chart extends React.Component {
         }
 
         return (
-            <div>
+            <div style={{ marginLeft: '20px', width: '90%' }}>
                 <Category chartData={this.state.categorydata} />
                 <br />
                 <br />
