@@ -104,11 +104,11 @@ class Account extends React.Component {
                                 <InputLabel htmlFor="email">Email Address</InputLabel>
                                 <Input
                                     id="email"
-                                    name="email"
+                                    name="email2"
                                     type="email"
                                     autoFocus
                                     onChange={this.handleChange}
-                                    value={state.email || user.email}
+                                    value={state.email2 || user.email2 || user.email}
                                 />
                             </FormControl>
                             <FormControl margin="normal" required fullWidth>
