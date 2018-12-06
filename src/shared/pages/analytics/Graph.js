@@ -127,7 +127,15 @@ class Chart extends React.Component {
             <div>
                 <Category chartData={this.state.categorydata} />
                 <br />
+                <br />
+                <br />
+                <br />
+                <br />
                 <Budget chartData={this.state.budgetData} />
+                <br />
+                <br />
+                <br />
+                <br />
                 <br />
                 <Pie chartData={this.state.chartData} />
             </div>

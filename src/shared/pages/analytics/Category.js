@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 const Div = Styled.div`
     height: 420px;
-    width: 80%;
+    width: 90%;
     margin-left: 10%;
 `;
 
@@ -18,7 +18,14 @@ const category = (props) => {
     return (
         <Div>
             <H1>Your Last Order</H1>
-            <HorizontalBar data={props.chartData} height="30%" width="100%" options={{}} />
+            <HorizontalBar
+                data={props.chartData}
+                width={100}
+                height={50}
+                options={{
+                    maintainAspectRatio: false,
+                }}
+            />
         </Div>
     );
 };
