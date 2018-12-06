@@ -17,7 +17,7 @@ const H1 = Styled.h1`
 const category = (props) => {
     return (
         <Div>
-            <H1>Your Spendings</H1>
+            <H1>Your Last Order</H1>
             <HorizontalBar data={props.chartData} height="30%" width="100%" options={{}} />
         </Div>
     );

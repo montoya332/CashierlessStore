@@ -11,49 +11,13 @@ class Chart extends React.Component {
         products: null,
         items: null,
         budgetData: {
-            labels: [
-                'January',
-                'Febraury',
-                'March',
-                'April',
-                'May',
-                'June',
-                'July',
-                'August',
-                'September',
-                'October',
-                'Novermber',
-            ],
+            labels: ['November', 'December'],
             datasets: [
                 {
                     label: 'Amount Spent in USD',
-                    data: [12, 19, 3, 5, 2, 22, 36, 12, 24, 10, 35, 5],
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 99, 132, 0.2)',
-                    ],
-                    borderColor: [
-                        'rgba(255,99,132,1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255,99,132,1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 99, 132, 1)',
-                    ],
+                    data: [],
+                    backgroundColor: ['rgba(255, 99, 132, 0.2)'],
+                    borderColor: ['rgba(255,99,132,1)'],
                     borderWidth: 1,
                 },
             ],
@@ -83,19 +47,11 @@ class Chart extends React.Component {
             ],
         },
         categorydata: {
-            labels: [
-                'Food',
-                'Drinks',
-                'Electronics',
-                'Clothing',
-                'Books',
-                'Kitchen and Dining',
-                'Toys',
-            ],
+            labels: [],
             datasets: [
                 {
                     label: 'Money Spent',
-                    data: [12, 6, 3, 5, 12, 32, 4],
+                    data: [],
                     backgroundColor: [
                         'rgba(54, 162, 235, 0.2)',
                         'rgba(230,126,34,0.2)',
@@ -124,24 +80,41 @@ class Chart extends React.Component {
         console.log('User: ', user);
         axios.post('/api/order/getOrderHistory', { email: user.email }).then(({ data }) => {
             const chart = { ...this.state.chartData };
+            const category = { ...this.state.categorydata };
+            const budget = { ...this.state.budgetData };
+            const blabels = ['November', 'December'];
+            const bdata = [];
+            const clabels = [];
+            const cprice = [];
             const labels = [];
             const price = [];
             data.products.map((data) => {
                 labels.push(data.name);
                 price.push(data.price);
             });
+            bdata.push(0);
+            bdata.push(price.reduce((a, b) => a + b, 0));
+            data.items.map((data) => {
+                clabels.push(data.Name);
+                cprice.push(data.price);
+            });
+            budget.labels = blabels;
+            budget.datasets[0].data = bdata;
+            category.labels = clabels;
+            category.datasets[0].data = cprice;
             chart.labels = labels;
             chart.datasets[0].data = price;
             this.setState({
                 products: data.products,
                 items: data.items,
                 chartData: chart,
+                categorydata: category,
             });
         });
     }
     render() {
-        const { items, products, chartData } = this.state;
-        console.log('render: ', { items, products, chartData });
+        const { items, products, chartData, categorydata } = this.state;
+        console.log('render: ', { items, products, chartData, categorydata });
 
         if (!items) {
             return <p>Loading</p>;
