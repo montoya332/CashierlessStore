@@ -10,8 +10,8 @@ const products = {
     Orange: 1.05,
     Computer: 1500,
     Glasses: 200,
-    'Water Bottle': 1.25,
-    book: 25,
+    Bottle: 1.25,
+    Book: 25,
 };
 
 const productsArray = Object.keys(products).map((k) => ({ name: k, price: products[k] }));
