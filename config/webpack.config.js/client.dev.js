@@ -1,5 +1,5 @@
 const baseConfig = require('./client.base');
-const webpack = require('webpack');
+// const webpack = require('webpack');
 const WriteFileWebpackPlugin = require('write-file-webpack-plugin');
 const generateSourceMap = process.env.OMIT_SOURCEMAP === 'true' ? false : true;
 
@@ -7,7 +7,7 @@ const config = {
     ...baseConfig,
     plugins: [
         new WriteFileWebpackPlugin(),
-        new webpack.HotModuleReplacementPlugin(),
+        // new webpack.HotModuleReplacementPlugin(), TODO:
         ...baseConfig.plugins,
     ],
     mode: 'development',

@@ -21,7 +21,7 @@ const start = async () => {
 
     const [clientConfig, serverConfig] = webpackConfig;
     clientConfig.entry.bundle = [
-        `webpack-hot-middleware/client?path=http://localhost:${WEBPACK_PORT}/__webpack_hmr`,
+        // `webpack-hot-middleware/client?path=http://localhost:${WEBPACK_PORT}/__webpack_hmr`,
         ...clientConfig.entry.bundle,
     ];
 
