@@ -54,7 +54,7 @@ class App extends React.PureComponent<PropsT> {
     };
     renderOrderHistoy = () => {
         return (
-            <div>
+            <div onClick={this.getOrders}>
                 <List items={this.state.todisplay} />
             </div>
         );
