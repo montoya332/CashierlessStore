@@ -272,7 +272,8 @@ router.post('/getOrderHistory', (req, res) => {
                     }, {});
 
                     const itemsArray = Object.keys(fItemsHash).map((x) => {
-                        const item = fItems.find((i) => i.Name === x);
+                        const getItem = fItems.find((i) => i.Name === x);
+                        const item = getItem ? { ...getItem } : {};
                         item.price = fItemsHash[x] || item.price;
                         return item;
                     });

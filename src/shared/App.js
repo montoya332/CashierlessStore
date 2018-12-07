@@ -33,14 +33,17 @@ class App extends React.PureComponent<PropsT> {
         };
     }
     componentDidMount() {
+        this.getOrders();
+    }
+    getOrders = () => {
         const { user } = this.props;
         user.email &&
             axios.post('/api/order/getOrderHistory', { email: user.email }).then((response) => {
                 this.setState({
-                    todisplay: response.data.items,
+                    todisplay: response.data.fItems || [],
                 });
             });
-    }
+    };
     setLanguage = (e: SyntheticEvent<HTMLButtonElement>) => {
         this.props.setLocale(e.target.value);
     };
