@@ -251,7 +251,14 @@ router.post('/getOrderHistory', (req, res) => {
                 .find(query)
                 .toArray((err, result) => {
                     if (err) throw err;
-                    const items = result[0].items.map((item) => {
+                    console.log(result);
+                    const allItems = result
+                        .map((x) => x.items)
+                        .reduce((acc, curr) => {
+                            acc.push(...curr);
+                            return acc;
+                        }, []);
+                    const items = allItems.map((item) => {
                         return { ...item, price: products[item.Name] };
                     });
 
@@ -259,6 +266,7 @@ router.post('/getOrderHistory', (req, res) => {
                     res.status(201).json({
                         items: fItems,
                         products: productsArray,
+                        all: allItems,
                     });
                 });
 
