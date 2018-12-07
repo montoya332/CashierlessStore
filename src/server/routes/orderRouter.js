@@ -261,12 +261,27 @@ router.post('/getOrderHistory', (req, res) => {
                     const items = allItems.map((item) => {
                         return { ...item, price: products[item.Name] };
                     });
-
                     const fItems = items.filter((item) => item.price);
+                    const fItemsHash = fItems.reduce((acc, curr) => {
+                        if (acc[curr.Name]) {
+                            acc[curr.Name] = acc[curr.Name] + curr.price;
+                        } else {
+                            acc[curr.Name] = curr.price;
+                        }
+                        return acc;
+                    }, {});
+
+                    const itemsArray = Object.keys(fItemsHash).map((x) => {
+                        const item = fItems.find((i) => i.Name === x);
+                        item.price = fItemsHash[x] || item.price;
+                        return item;
+                    });
+
                     res.status(201).json({
-                        items: fItems,
+                        items: itemsArray,
+                        fItems,
                         products: productsArray,
-                        all: allItems,
+                        fItemsHash,
                     });
                 });
 
